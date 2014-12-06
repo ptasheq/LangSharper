@@ -5,6 +5,7 @@
 *.suo
 *.user
 *.sln.docstates
+*.sqlite
 
 # Build results
 [Dd]ebug/
