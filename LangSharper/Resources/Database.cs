@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Net.Mime;
-using System.Windows;
 using SQLite.Net;
 using SQLite.Net.Attributes;
 using SQLite.Net.Platform.Win32;

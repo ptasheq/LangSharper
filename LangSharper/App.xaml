@@ -1,8 +1,21 @@
 ﻿<Application x:Class="LangSharper.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:LangSharper.ViewModels"
+             xmlns:views="clr-namespace:LangSharper.Views"
              Startup="App_OnStartup"
-             StartupUri="MainWindow.xaml">
-    <Application.Resources> 
+             StartupUri="Views/MainWindow.xaml">
+    <Application.Resources>
+        <DataTemplate DataType="{x:Type vm:StartViewModel}">
+            <views:StartView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:MainMenuViewModel}">
+            <views:MainMenuView />
+        </DataTemplate>
+
+            <!--<DataTemplate DataType="{x:Type vm:StartViewModel}">
+           <vm:StartViewModel></vm:StartViewModel>
+       </DataTemplate> -->
     </Application.Resources>
 </Application>

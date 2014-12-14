@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LangSharper;
@@ -107,7 +106,6 @@ namespace LangSharperTests
                 {
                     StringAssert.Contains(e.Message, "Constraint");
                 }
-
 
                 try
                 {
