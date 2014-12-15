@@ -3,29 +3,49 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:userControls="clr-namespace:LangSharper.UserControls"
-             mc:Ignorable="d" 
-             >
+             mc:Ignorable="d">
     <UserControl.Resources>
-        <Style TargetType="StackPanel">
-            <Setter Property="VerticalAlignment" Value="Center"></Setter>
-            <Setter Property="MaxWidth" Value="300"></Setter>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#FFF9F9F9"></Setter>
+            <Setter Property="MinHeight" Value="75"></Setter>
+            <Setter Property="Margin" Value="0,10,0,0"></Setter>
         </Style>
+
         <Style TargetType="TextBlock">
-            <Setter Property="FontSize" Value="36"></Setter>
-            <Setter Property="FontFamily" Value="Helvetica"></Setter>
-            <Setter Property="TextAlignment" Value="Center"></Setter>
-            <Setter Property="Margin" Value="0,0,0,10"></Setter>
+            <Setter Property="FontSize" Value="14"></Setter>
+            <Setter Property="FontWeight" Value="DemiBold"></Setter>
+            <Setter Property="Foreground" Value="#FF333333"></Setter>
         </Style>
     </UserControl.Resources>
-    <StackPanel MaxWidth="150" VerticalAlignment="Center" DataContext="{Binding}">
-        <AdornerDecorator>
-            <TextBox Name="TbInputDialog" Text="{Binding NewUserName}">
-                <userControls:WatermarkService.Watermark>
-                    <TextBlock Text="{Binding InputDialogTextBlock}"></TextBlock>
-                </userControls:WatermarkService.Watermark>
-            </TextBox>
-        </AdornerDecorator>
-        <Button Margin="0,10,0,0" Name="BtnInputDialog" Content="blabla" Command="{Binding ShowUserCmd}"></Button>
+
+    <StackPanel VerticalAlignment="Center" DataContext="{Binding}">
+        <TextBlock Name="TbMainMenu" Text="{Binding Texts.Dict[TbMainMenu]}" Style="{DynamicResource tbMain}"></TextBlock>    
+        <Grid Margin="0,0,0,10">
+           <Grid.ColumnDefinitions>
+               <ColumnDefinition Width="3*"></ColumnDefinition>
+               <ColumnDefinition Width="1*"></ColumnDefinition>
+               <ColumnDefinition Width="3*"></ColumnDefinition>
+           </Grid.ColumnDefinitions> 
+           <Grid.RowDefinitions>
+               <RowDefinition Height="1*"></RowDefinition>
+               <RowDefinition Height="1*"></RowDefinition>
+               <RowDefinition Height="1*"></RowDefinition>
+           </Grid.RowDefinitions>
+           <Button Command="{Binding ManageLessonsCmd}">
+                <TextBlock TextWrapping="Wrap" Text="{Binding Texts.Dict[TbManageLessons]}"></TextBlock>
+           </Button>
+           <Button Grid.Column="2" Command="{Binding SimpleLearningCmd}">
+                <TextBlock TextWrapping="Wrap" Text="{Binding Texts.Dict[TbSimpleLearning]}"></TextBlock>
+           </Button>
+           <Button Grid.Column="0" Grid.Row="1" Command="{Binding WriteLearningCmd}">
+                <TextBlock TextWrapping="Wrap" Text="{Binding Texts.Dict[TbWriteLearning]}"></TextBlock>
+           </Button>
+           <Button Grid.Column="2" Grid.Row="1" Command="{Binding StatisticsCmd}">
+                <TextBlock TextWrapping="Wrap" Text="{Binding Texts.Dict[TbViewStatistics]}"></TextBlock>
+           </Button>
+           <Button Grid.Column="0" Grid.Row="2" Command="{Binding ReturnToLoginCmd}">
+                <TextBlock TextWrapping="Wrap" Text="{Binding Texts.Dict[TbReturnToLogin]}"></TextBlock>
+           </Button>
+        </Grid>
     </StackPanel>
 </UserControl>

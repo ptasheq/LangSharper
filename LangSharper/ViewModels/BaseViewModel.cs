@@ -8,11 +8,23 @@ namespace LangSharper.ViewModels
 {
     public class BaseViewModel: INotifyPropertyChanged
     {
-        public static readonly Dictionary<Type, BaseViewModel> ViewModelsDict = new Dictionary<Type, BaseViewModel>()
+        static readonly Dictionary<Type, BaseViewModel> _viewModelsDict = new Dictionary<Type, BaseViewModel>()
         {
-            {typeof (StartViewModel), new StartViewModel()},
-            {typeof (MainMenuViewModel), new MainMenuViewModel()}
+            {typeof (StartViewModel), null},
+            {typeof (MainMenuViewModel), null},
+            {typeof (ManageLessonsViewModel), null},
+            {typeof (SimpleLearningViewModel), null},
+            {typeof (WriteLearningViewModel), null},
+            {typeof (StatisticsViewModel), null}
         };
+
+        public static BaseViewModel GetViewModel<T>() where T : new()
+        {
+            if (_viewModelsDict[typeof (T)] == null) {
+                _viewModelsDict[typeof (T)] = new T() as BaseViewModel;  
+            }
+            return _viewModelsDict[typeof (T)];
+        }
 
         protected BaseViewModel()
         {

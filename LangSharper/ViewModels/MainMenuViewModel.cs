@@ -5,14 +5,17 @@ namespace LangSharper.ViewModels
     {
         public MainMenuViewModel()
         {
-            ShowUserCmd = new AppCommand(ShowUser); 
+            ManageLessonsCmd = new AppCommand(() => { PropertyFinder.Instance.CurrentModel = GetViewModel<ManageLessonsViewModel>(); });
+            SimpleLearningCmd = new AppCommand(() => { PropertyFinder.Instance.CurrentModel = GetViewModel<SimpleLearningViewModel>(); });
+            WriteLearningCmd = new AppCommand(() => { PropertyFinder.Instance.CurrentModel = GetViewModel<WriteLearningViewModel>(); });
+            StatisticsCmd = new AppCommand(() => { PropertyFinder.Instance.CurrentModel = GetViewModel<StatisticsViewModel>(); });
+            ReturnToLoginCmd = new AppCommand(() => { PropertyFinder.Instance.CurrentModel = GetViewModel<StartViewModel>(); });
         }
 
-        public AppCommand ShowUserCmd { get; private set; }
-
-        public void ShowUser()
-        {
-            PropertyFinder.Instance.CurrentModel = ViewModelsDict[typeof(StartViewModel)];
-        }
+        public AppCommand ManageLessonsCmd { get; private set; }
+        public AppCommand SimpleLearningCmd { get; private set; }
+        public AppCommand WriteLearningCmd { get; private set; }
+        public AppCommand StatisticsCmd { get; private set; }
+        public AppCommand ReturnToLoginCmd { get; private set; }
     }
 }

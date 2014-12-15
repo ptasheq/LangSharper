@@ -4,5 +4,26 @@
         xmlns:langSharper="clr-namespace:LangSharper"
         Title="LangSharper" Height="350" Width="525"
         DataContext="{Binding CurrentModel, Source={x:Static langSharper:PropertyFinder.Instance}}">
+    <Window.Resources>
+        <Style TargetType="StackPanel">
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="MaxWidth" Value="400"></Setter>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="tbMain">
+            <Setter Property="FontSize" Value="36"></Setter>
+            <Setter Property="FontFamily" Value="Helvetica"></Setter>
+            <Setter Property="TextAlignment" Value="Center"></Setter>
+            <Setter Property="Margin" Value="0,0,0,10"></Setter>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="tbMainSub">
+            <Setter Property="FontSize" Value="24"></Setter>
+            <Setter Property="Foreground" Value="#FF333333"></Setter>
+            <Setter Property="FontFamily" Value="Helvetica"></Setter>
+            <Setter Property="TextAlignment" Value="Center"></Setter>
+            <Setter Property="Margin" Value="0,0,0,10"></Setter>
+        </Style>
+    </Window.Resources>
     <ContentControl Content="{Binding}"></ContentControl>
 </Window>

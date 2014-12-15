@@ -82,8 +82,15 @@
     <Compile Include="Resources\Database.cs" />
     <Compile Include="Resources\Globals.cs" />
     <Compile Include="ViewModels\MainMenuViewModel.cs" />
+    <Compile Include="ViewModels\ManageLessonsViewModel.cs" />
+    <Compile Include="ViewModels\SimpleLearningViewModel.cs" />
+    <Compile Include="ViewModels\StatisticsViewModel.cs" />
+    <Compile Include="ViewModels\WriteLearningViewModel.cs" />
     <Compile Include="Views\MainMenuView.xaml.cs">
       <DependentUpon>MainMenuView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ManageLessonsView.xaml.cs">
+      <DependentUpon>ManageLessonsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\StartView.xaml.cs">
       <DependentUpon>StartView.xaml</DependentUpon>
@@ -95,7 +102,20 @@
     <Compile Include="Resources\UiTexts.cs" />
     <Compile Include="UserControls\WatermarkAdorner.cs" />
     <Compile Include="UserControls\WatermarkService.cs" />
+    <Compile Include="Views\SimpleLearningView.xaml.cs">
+      <DependentUpon>SimpleLearningView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StatisticsView.xaml.cs">
+      <DependentUpon>StatisticsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WriteLearningView.xaml.cs">
+      <DependentUpon>WriteLearningView.xaml</DependentUpon>
+    </Compile>
     <Page Include="Views\MainMenuView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ManageLessonsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -115,6 +135,18 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\SimpleLearningView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StatisticsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WriteLearningView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

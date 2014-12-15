@@ -18,7 +18,7 @@ namespace LangSharperTests
         {
             File.Delete(Globals.Path + "testdatabase.sqlite");
             var uiTexts = new UiTexts("../../../LangSharper/" + Globals.UiTextFileName);
-            PropertyFinder.CreateInstance(new Dictionary<string, object>()
+            PropertyFinder.CreateInstance(new Dictionary<string, object>
             {
                 { "UiTexts", uiTexts }, 
                 { "DatabasePath", Globals.Path + "testdatabase.sqlite" }
@@ -31,7 +31,6 @@ namespace LangSharperTests
                 db.Insert(new Database.User() {Name = "testuser2"});
                 db.Insert(new Database.User() {Name = "testuser3"});
             }
-            
         }
 
 

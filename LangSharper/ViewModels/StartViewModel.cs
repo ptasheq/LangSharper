@@ -43,7 +43,7 @@ namespace LangSharper.ViewModels
         private void ChooseUser()
         {
             PropertyFinder.Instance.Resource["CurrentUserId"] = Users[UserIndex].Id;
-            PropertyFinder.Instance.CurrentModel = ViewModelsDict[typeof (MainMenuViewModel)];
+            PropertyFinder.Instance.CurrentModel = GetViewModel<MainMenuViewModel>();
         }
 
         private bool CanExecuteChooseUser()

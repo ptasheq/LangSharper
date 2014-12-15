@@ -14,8 +14,21 @@
             <views:MainMenuView />
         </DataTemplate>
 
-            <!--<DataTemplate DataType="{x:Type vm:StartViewModel}">
-           <vm:StartViewModel></vm:StartViewModel>
-       </DataTemplate> -->
+        <DataTemplate DataType="{x:Type vm:ManageLessonsViewModel}">
+            <views:ManageLessonsView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:SimpleLearningViewModel}">
+            <views:SimpleLearningView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:WriteLearningViewModel}">
+            <views:WriteLearningView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:StatisticsViewModel}">
+            <views:StatisticsView/>
+        </DataTemplate>
     </Application.Resources>
+
 </Application>

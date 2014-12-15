@@ -10,8 +10,8 @@ namespace LangSharper
     {
         public MainWindow()
         {
-            Application.Current.Properties["ViewModel"] = BaseViewModel.ViewModelsDict[typeof(StartViewModel)];
-            DataContext = BaseViewModel.ViewModelsDict[typeof (StartViewModel)];
+            Application.Current.Properties["ViewModel"] = BaseViewModel.GetViewModel<StartViewModel>();
+            DataContext = BaseViewModel.GetViewModel<StartViewModel>();
             InitializeComponent();
         }
     }
