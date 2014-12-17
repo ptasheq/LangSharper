@@ -25,28 +25,30 @@
         <BooleanToVisibilityConverter x:Key="boolToVisibility"/>
     </UserControl.Resources>
 
-    <StackPanel DataContext="{Binding}" MaxWidth="300">
-        <TextBlock Name="TbChooseUser" Text="{Binding Texts.Dict[TbChooseUser]}" Style="{DynamicResource tbMain}"></TextBlock>
-        <ComboBox IsEditable="True" IsReadOnly="True" Name="CbUserNames" ItemsSource="{Binding Users}" 
-                  DisplayMemberPath="Name" Text="{Binding Texts.Dict[CbUserNames]}" SelectedIndex="{Binding UserIndex, Mode=OneWayToSource}">
-        </ComboBox>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Button Name="BtnNewUser" Content="{Binding Texts.Dict[BtnNewUser]}" Command="{Binding ShowAddUserControlsCmd}"></Button>
-            <Button Grid.Column="2" Name="BtnChooseUser" Content="{Binding Texts.Dict[BtnChooseUser]}" Command="{Binding ChooseUserCmd}"></Button>
-        </Grid>
-        <StackPanel Style="{StaticResource addUser}" Visibility="{Binding AddUserVisible, Converter={StaticResource boolToVisibility}}">
-            <TextBox Name="TbInputDialog" Text="{Binding NewUserName, UpdateSourceTrigger=PropertyChanged}">
-                <userControls:WatermarkService.Watermark>
-                    <TextBlock Text="{Binding Texts.Dict[WtmNewUserName]}"></TextBlock>
-                </userControls:WatermarkService.Watermark>
-            </TextBox>
-            <Button Style="{StaticResource btnAddUser}" Content="{Binding Texts.Dict[BtnAddUser]}" Command="{Binding AddUserCmd}"></Button>
+    <Grid>
+        <StackPanel DataContext="{Binding}" MaxWidth="300">
+            <TextBlock Name="TbChooseUser" Text="{Binding Texts.Dict[TbChooseUser]}" Style="{DynamicResource tbMain}"></TextBlock>
+            <ComboBox IsEditable="True" IsReadOnly="True" Name="CbUserNames" ItemsSource="{Binding Users}" 
+                      DisplayMemberPath="Name" Text="{Binding Texts.Dict[CbUserNames]}" SelectedIndex="{Binding UserIndex, Mode=OneWayToSource}">
+            </ComboBox>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Name="BtnNewUser" Content="{Binding Texts.Dict[BtnNewUser]}" Command="{Binding ShowAddUserControlsCmd}"></Button>
+                <Button Grid.Column="2" Name="BtnChooseUser" Content="{Binding Texts.Dict[BtnChooseUser]}" Command="{Binding ChooseUserCmd}"></Button>
+            </Grid>
+            <StackPanel Style="{StaticResource addUser}" Visibility="{Binding AddUserVisible, Converter={StaticResource boolToVisibility}}">
+                <TextBox Name="TbInputDialog" Text="{Binding NewUserName, UpdateSourceTrigger=PropertyChanged}">
+                    <userControls:WatermarkService.Watermark>
+                        <TextBlock Text="{Binding Texts.Dict[WtmNewUserName]}"></TextBlock>
+                    </userControls:WatermarkService.Watermark>
+                </TextBox>
+                <Button Style="{StaticResource btnAddUser}" Content="{Binding Texts.Dict[BtnAddUser]}" Command="{Binding AddUserCmd}"></Button>
+            </StackPanel>
         </StackPanel>
-    </StackPanel>
-
+        <userControls:ErrorControl></userControls:ErrorControl>
+    </Grid>
 </UserControl>

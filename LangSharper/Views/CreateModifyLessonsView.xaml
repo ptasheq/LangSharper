@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="LangSharper.Views.CreateModifyLessonsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:userControls="clr-namespace:LangSharper.UserControls"
+             xmlns:langSharper="clr-namespace:LangSharper"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style TargetType="Button" x:Name="btnPrevious">
+            <Setter Property="Margin" Value="0"></Setter>
+            <Setter Property="Padding" Value="0,5,0,5"></Setter>
+        </Style>
+
+       <Style TargetType="WrapPanel">
+           <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+       </Style> 
+
+        <Style TargetType="Border">
+            <Setter Property="BorderBrush" Value="LightBlue"></Setter>
+            <Setter Property="BorderThickness" Value="1"></Setter>
+        </Style>
+
+        <Style TargetType="Grid">
+            <Setter Property="Width" Value="300"></Setter>
+        </Style>
+
+        <Style TargetType="StackPanel" x:Key="spChangeEdit">
+            <Setter Property="Margin" Value="10"></Setter>
+        </Style>
+
+        <BooleanToVisibilityConverter x:Key="boolToVisibility"/>
+        <langSharper:InverseBooleanToVisibilityConverter x:Key="invBoolToVisibility"/>
+    </UserControl.Resources>
+    <DockPanel>
+        <Button DockPanel.Dock="Left" Content="{Binding Texts.Dict[BtnPrevious]}" Command="{Binding PreviousCmd}">
+            <Button.LayoutTransform>
+                <RotateTransform Angle="-90"></RotateTransform>
+            </Button.LayoutTransform>
+        </Button>
+
+        <StackPanel DockPanel.Dock="Right">
+            <TextBlock Margin="0" Text="{Binding Texts.Dict[TbMainManageLessons]}" Style="{DynamicResource tbMain}"></TextBlock>
+            <WrapPanel>
+                <TextBlock Text="{Binding Texts.Dict[TbLessonEdit]}" Style="{DynamicResource tbMainSub}"></TextBlock>
+                <TextBlock Text="{Binding Lesson.Name}" Style="{DynamicResource tbMainSub}"></TextBlock>
+            </WrapPanel>
+
+            <Grid Visibility="{Binding IsChangeNameVisible, Converter={StaticResource boolToVisibility}}">
+                <Border>
+                    <StackPanel Style="{StaticResource spChangeEdit}">
+                        <TextBox Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}">
+                            <userControls:WatermarkService.Watermark>
+                                <TextBlock Text="{Binding Texts.Dict[WtmNewLessonName]}"></TextBlock>
+                            </userControls:WatermarkService.Watermark>
+                        </TextBox>
+                        <Button Content="{Binding Texts.Dict[BtnChangeLessonName]}" Command="{Binding ChangeLessonNameCmd}"></Button>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Button Content="{Binding Texts.Dict[BtnShowChangeLessonSection]}" Command="{Binding ShowChangeLessonNameSectionCmd}"
+                    Visibility="{Binding IsChangeNameVisible, Converter={StaticResource invBoolToVisibility}}"></Button>
+
+            <DataGrid ItemsSource="{Binding }"></DataGrid>
+        </StackPanel>
+    </DockPanel>
+</UserControl>

@@ -13,24 +13,36 @@ namespace LangSharper.ViewModels
             {typeof (StartViewModel), null},
             {typeof (MainMenuViewModel), null},
             {typeof (ManageLessonsViewModel), null},
+            {typeof (CreateModifyLessonsViewModel), null},
             {typeof (SimpleLearningViewModel), null},
             {typeof (WriteLearningViewModel), null},
             {typeof (StatisticsViewModel), null}
         };
 
-        public static BaseViewModel GetViewModel<T>() where T : new()
+        public static T GetViewModel<T>() where T : class, new()
         {
-            if (_viewModelsDict[typeof (T)] == null) {
-                _viewModelsDict[typeof (T)] = new T() as BaseViewModel;  
-            }
-            return _viewModelsDict[typeof (T)];
+            return _viewModelsDict[typeof (T)] as T  ?? (_viewModelsDict[typeof (T)] = new T() as BaseViewModel) as T;
         }
 
         protected BaseViewModel()
         {
+            IsErrorVisible = false;
+            HideError = new AppCommand(() => { IsErrorVisible = false; OnPropertyChanged("IsErrorVisible"); });
         }
 
-        public UiTexts Texts {get { return PropertyFinder.Instance.GetResource("UiTexts") as UiTexts;}} 
+        public UiTexts Texts { get { return PropertyFinder.Instance.GetResource("UiTexts") as UiTexts;} } 
+        public string ErrorMessage { get; protected set; }
+        public bool IsErrorVisible { get; protected set; }
+
+        public AppCommand HideError { get; protected set; }
+            
+        protected void ShowError(string key)
+        {
+            ErrorMessage = Texts.Dict[key];
+            IsErrorVisible = true;
+            OnPropertyChanged("ErrorMessage");
+            OnPropertyChanged("IsErrorVisible");
+        } 
 
         public event PropertyChangedEventHandler PropertyChanged;
 

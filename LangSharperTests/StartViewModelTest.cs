@@ -71,7 +71,7 @@ namespace LangSharperTests
             Assert.IsTrue(m.Users.Any(u => u.Name == testUserName));
             using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString()))
             {
-                db.Table<Database.User>().Where(u => u.Name == testUserName).First();
+                db.Table<Database.User>().First(u => u.Name == testUserName);
             }
 
             Assert.IsFalse(m.AddUserCmd.CanExecute(0));

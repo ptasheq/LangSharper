@@ -29,6 +29,10 @@
         <DataTemplate DataType="{x:Type vm:StatisticsViewModel}">
             <views:StatisticsView/>
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:CreateModifyLessonsViewModel}">
+            <views:CreateModifyLessonsView />
+        </DataTemplate>
     </Application.Resources>
 
 </Application>

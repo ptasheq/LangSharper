@@ -27,7 +27,7 @@ namespace LangSharperTests
         public void ChangeViewCmdsTest()
         {
             var vm = new MainMenuViewModel();
-            var dict = new Dictionary<AppCommand, Type>()
+            var dict = new Dictionary<AppCommand, Type>
             {
                 {vm.ManageLessonsCmd, typeof (ManageLessonsViewModel)},
                 {vm.SimpleLearningCmd, typeof (SimpleLearningViewModel)},

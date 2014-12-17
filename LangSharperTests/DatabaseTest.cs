@@ -166,7 +166,6 @@ namespace LangSharperTests
                 }
 
                 Assert.AreEqual(1, db.Table<Database.Word>().Count());
-
             }
         }
 

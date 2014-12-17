@@ -81,11 +81,19 @@
     <Compile Include="Resources\AppCommand.cs" />
     <Compile Include="Resources\Database.cs" />
     <Compile Include="Resources\Globals.cs" />
+    <Compile Include="Resources\InverseBoolConverter.cs" />
+    <Compile Include="UserControls\ErrorControl.xaml.cs">
+      <DependentUpon>ErrorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\CreateModifyLessonsViewModel.cs" />
     <Compile Include="ViewModels\MainMenuViewModel.cs" />
     <Compile Include="ViewModels\ManageLessonsViewModel.cs" />
     <Compile Include="ViewModels\SimpleLearningViewModel.cs" />
     <Compile Include="ViewModels\StatisticsViewModel.cs" />
     <Compile Include="ViewModels\WriteLearningViewModel.cs" />
+    <Compile Include="Views\CreateModifyLessonsView.xaml.cs">
+      <DependentUpon>CreateModifyLessonsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainMenuView.xaml.cs">
       <DependentUpon>MainMenuView.xaml</DependentUpon>
     </Compile>
@@ -111,6 +119,14 @@
     <Compile Include="Views\WriteLearningView.xaml.cs">
       <DependentUpon>WriteLearningView.xaml</DependentUpon>
     </Compile>
+    <Page Include="UserControls\ErrorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CreateModifyLessonsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainMenuView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
