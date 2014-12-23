@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
@@ -14,16 +15,6 @@ namespace LangSharper.ViewModels
     {
         public CreateModifyLessonsViewModel()
         {
-            if (GetViewModel<ManageLessonsViewModel>().SelectedLesson == null)
-            {
-                Lesson = new Database.Lesson { Name = null, UserId = PropertyFinder.Instance.Resource["CurrentUserId"] as int?  };
-                IsChangeNameVisible = true;
-            }
-            else
-            {
-                Lesson = GetViewModel<ManageLessonsViewModel>().SelectedLesson;
-                IsChangeNameVisible = false;
-            }
             PreviousCmd = new AppCommand(() => { PropertyFinder.Instance.CurrentModel = GetViewModel<ManageLessonsViewModel>(); });
             ChangeLessonNameCmd = new AppCommand(ChangeLessonName, () => !string.IsNullOrEmpty(NewName));
             ShowChangeLessonNameSectionCmd = new AppCommand(ShowChangeLessonSectionName, () => IsChangeNameVisible.Equals(false));
@@ -32,6 +23,27 @@ namespace LangSharper.ViewModels
         public AppCommand PreviousCmd { get; private set; }
         public AppCommand ChangeLessonNameCmd { get; private set; }
         public AppCommand ShowChangeLessonNameSectionCmd { get; private set; }
+
+        public override void OnViewActivate()
+        {
+            NewName = null;
+            IsErrorVisible = false;
+            if (GetViewModel<ManageLessonsViewModel>().SelectedLesson == null)
+            {
+                Lesson = new Database.Lesson { Name = null, UserId = PropertyFinder.Instance.Resource["CurrentUserId"] as int? };
+                IsChangeNameVisible = true;
+                Words = new ObservableCollection<Database.Word>() { new Database.Word {DefinitionLang1 = "abc", DefinitionLang2 = "cba", LessonId = Lesson.Id} };
+            }
+            else
+            {
+                Lesson = GetViewModel<ManageLessonsViewModel>().SelectedLesson;
+                IsChangeNameVisible = false;
+                using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString()))
+                {
+                    Words = new ObservableCollection<Database.Word>(db.Table<Database.Word>().Where(w => w.LessonId == Lesson.Id));    
+                }
+            }
+        }
 
         void ChangeLessonName()
         {
@@ -58,5 +70,6 @@ namespace LangSharper.ViewModels
         public string NewName { get; set; }
         public bool IsChangeNameVisible { get; set; }
         public Database.Lesson Lesson { get; private set; }
+        public ObservableCollection<Database.Word> Words { get; private set; }
     }
 }

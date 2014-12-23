@@ -22,6 +22,8 @@ TbLessonEdit:Edytujesz -
 WtmNewLessonName:Podaj nazwę lekcji
 BtnChangeLessonName:Zatwierdź nazwę lekcji
 BtnShowChangeLessonSection:Zmień nazwę lekcji
+WtmNewLangDefinition1:Podaj definicję w pierwszym języku
+WtmNewLangDefinition2:Podaj definicję w drugim języku
 
 TbMainLearning:Nauka
 TbMainSimpleLearning:Tryb prosty

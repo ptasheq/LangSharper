@@ -42,7 +42,11 @@ namespace LangSharper.ViewModels
             IsErrorVisible = true;
             OnPropertyChanged("ErrorMessage");
             OnPropertyChanged("IsErrorVisible");
-        } 
+        }
+
+        public virtual void OnViewActivate()
+        {
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

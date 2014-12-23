@@ -195,7 +195,17 @@ namespace LangSharperTests
                 });
 
                 // if entry doesn't exist we get exception
-                db.Table<Database.Word>().Where(w => w.DefinitionLang1 == "pies" && w.DefinitionLang2 == "a dog" && w.HasImage && w.LessonId == correctLesson.Id && w.Level == 3).First();
+                db.Table<Database.Word>().Where(w => w.DefinitionLang1 == "pies" && w.DefinitionLang2 == "a dog" 
+                    && w.HasImage && w.LessonId == correctLesson.Id && w.Level == 3).First();
+
+                db.Insert(new Database.Word()
+                {
+                    DefinitionLang1 = "pies",
+                    DefinitionLang2 = "a dog",
+                    HasImage = true,
+                    LessonId = correctLesson.Id+1,
+                    Level = 3
+                });
 
                 try
                 {

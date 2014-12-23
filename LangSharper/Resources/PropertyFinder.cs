@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using LangSharper.Annotations;
@@ -35,7 +36,12 @@ namespace LangSharper
         public ViewModels.BaseViewModel CurrentModel
         {
             get { return _dict["ViewModel"] as ViewModels.BaseViewModel; }
-            set { _dict["ViewModel"] = value; OnPropertyChanged(); }
+            set
+            {
+                _dict["ViewModel"] = value;
+                value.OnViewActivate();
+                OnPropertyChanged();
+            }
         }
 
         static public void CreateInstance(IDictionary dict)

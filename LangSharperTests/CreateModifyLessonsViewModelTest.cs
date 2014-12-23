@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Dynamic;
@@ -36,9 +37,11 @@ namespace LangSharperTests
         }
 
         [TestMethod]
-        public void ContructorTest()
+        public void ContructorAndOnViewActivateTest()
         {
             var vm = new CreateModifyLessonsViewModel();
+            vm.OnViewActivate();
+
 
             Assert.IsTrue(vm.IsChangeNameVisible);
             Assert.AreEqual(null, vm.Lesson.Name);
@@ -50,7 +53,7 @@ namespace LangSharperTests
                 Name = "testlesson",
                 UserId = (int) PropertyFinder.Instance.Resource["CurrentUserId"]
             };
-            vm = new CreateModifyLessonsViewModel();
+            vm.OnViewActivate();
 
             Assert.IsFalse(vm.IsChangeNameVisible);
             StringAssert.Contains(BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson.Name, vm.Lesson.Name);
@@ -58,9 +61,42 @@ namespace LangSharperTests
         }
 
         [TestMethod]
+        public void OnViewActivate_WordsQueryTest()
+        {
+            var vm = new CreateModifyLessonsViewModel();
+            vm.OnViewActivate();
+            Assert.AreEqual(1, vm.Words.Count);
+
+            var newLesson = new Database.Lesson()
+            {
+                Name = "lessontestname",
+                UserId = (int) PropertyFinder.Instance.Resource["CurrentUserId"]
+            };
+
+            using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString()))
+            {
+                db.Insert(newLesson);
+                db.Insert(new Database.Word { DefinitionLang1 = "a", DefinitionLang2 = "b", LessonId = newLesson.Id });
+                db.Insert(new Database.Word { DefinitionLang1 = "b", DefinitionLang2 = "c", LessonId = newLesson.Id });
+                db.Insert(new Database.Word { DefinitionLang1 = "c", DefinitionLang2 = "d", LessonId = newLesson.Id });
+                db.Insert(new Database.Word { DefinitionLang1 = "c", DefinitionLang2 = "d", LessonId = newLesson.Id+1 });
+            }
+
+            BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson = newLesson;
+            vm.OnViewActivate();
+            Assert.AreEqual(3, vm.Words.Count);
+            foreach (Database.Word w in vm.Words)
+            {
+                Assert.AreEqual(newLesson.Id, w.LessonId);
+            }
+
+        }
+
+        [TestMethod]
         public void PreviousCmdTest()
         {
             var vm = new CreateModifyLessonsViewModel();
+            vm.OnViewActivate();
             Assert.IsTrue(vm.PreviousCmd.CanExecute(0));
             vm.PreviousCmd.Execute(0);
             Assert.IsInstanceOfType(PropertyFinder.Instance.CurrentModel, typeof (ManageLessonsViewModel));
@@ -76,6 +112,7 @@ namespace LangSharperTests
                     ++propertyChangedCount;
             };
             var vm = new CreateModifyLessonsViewModel();
+            vm.OnViewActivate();
             Assert.IsFalse(vm.ChangeLessonNameCmd.CanExecute(0));
 
             vm.NewName = "a";
@@ -94,7 +131,7 @@ namespace LangSharperTests
                 Name = "testlesson",
                 UserId = (int) PropertyFinder.Instance.Resource["CurrentUserId"]
             };
-            vm = new CreateModifyLessonsViewModel();
+            vm.OnViewActivate();
             Assert.IsFalse(vm.ChangeLessonNameCmd.CanExecute(0));
         }
 
@@ -103,10 +140,10 @@ namespace LangSharperTests
         {
             PropertyFinder.Instance.Resource["CurrentUserId"] = 5;
             var vm = new CreateModifyLessonsViewModel();
+            vm.OnViewActivate();
             using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString()))
             {
                 db.Insert(new Database.Lesson() { Name = "lessontestname", UserId = (int) PropertyFinder.Instance.Resource["CurrentUserId"] });
-                //db.Table<Database.Lesson>().Count(l => l.Name != "bafa");
             }
 
             vm.NewName = "lessontestname";
@@ -115,7 +152,7 @@ namespace LangSharperTests
             Assert.IsTrue(vm.IsErrorVisible);
             StringAssert.Contains(vm.ErrorMessage, vm.Texts.Dict["ExLessonNameDuplicate"]);
 
-            vm = new CreateModifyLessonsViewModel();
+            vm.OnViewActivate();
             PropertyFinder.Instance.Resource["CurrentUserId"] = 6;
             vm.NewName = "lessontestname";
             Assert.IsTrue(vm.ChangeLessonNameCmd.CanExecute(0));
@@ -134,6 +171,7 @@ namespace LangSharperTests
             };
 
             var vm = new CreateModifyLessonsViewModel();
+            vm.OnViewActivate();
             Assert.IsFalse(vm.ShowChangeLessonNameSectionCmd.CanExecute(0));
             Assert.IsTrue(vm.IsChangeNameVisible);
 
@@ -142,7 +180,7 @@ namespace LangSharperTests
                 Id = 1, 
                 Name = "testlesson",
             };
-            vm = new CreateModifyLessonsViewModel();
+            vm.OnViewActivate();
             Assert.IsTrue(vm.ShowChangeLessonNameSectionCmd.CanExecute(0));
             Assert.IsFalse(vm.IsChangeNameVisible);
             vm.PropertyChanged += del;

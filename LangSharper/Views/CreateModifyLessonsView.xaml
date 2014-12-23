@@ -7,7 +7,12 @@
              xmlns:langSharper="clr-namespace:LangSharper"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <Style TargetType="Button" x:Name="btnPrevious">
+
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="0,10,0,0"></Setter>
+        </Style>
+        
+        <Style TargetType="Button" x:Key="btnPrevious">
             <Setter Property="Margin" Value="0"></Setter>
             <Setter Property="Padding" Value="0,5,0,5"></Setter>
         </Style>
@@ -29,17 +34,27 @@
             <Setter Property="Margin" Value="10"></Setter>
         </Style>
 
+        <Style TargetType="ListView">
+            <Setter Property="MaxWidth" Value="300"></Setter>
+        </Style>
+
         <BooleanToVisibilityConverter x:Key="boolToVisibility"/>
         <langSharper:InverseBooleanToVisibilityConverter x:Key="invBoolToVisibility"/>
     </UserControl.Resources>
-    <DockPanel>
-        <Button DockPanel.Dock="Left" Content="{Binding Texts.Dict[BtnPrevious]}" Command="{Binding PreviousCmd}">
+    <DockPanel DataContext="{Binding}">
+        <Button Style="{StaticResource btnPrevious}" DockPanel.Dock="Left" 
+                Content="{Binding Texts.Dict[BtnPrevious]}" Command="{Binding PreviousCmd}">
             <Button.LayoutTransform>
                 <RotateTransform Angle="-90"></RotateTransform>
             </Button.LayoutTransform>
         </Button>
 
-        <StackPanel DockPanel.Dock="Right">
+        <StackPanel Name="sp" DockPanel.Dock="Right">
+            <StackPanel.Resources>
+
+                <TextBlock x:Key="wmLangDefinition1" Text="{Binding Source={x:Reference sp}, Path=DataContext.Texts.Dict[WtmNewLangDefinition1]}"></TextBlock>
+                <TextBlock x:Key="wmLangDefinition2" Text="{Binding Source={x:Reference sp}, Path=DataContext.Texts.Dict[WtmNewLangDefinition2]}"></TextBlock>
+            </StackPanel.Resources>
             <TextBlock Margin="0" Text="{Binding Texts.Dict[TbMainManageLessons]}" Style="{DynamicResource tbMain}"></TextBlock>
             <WrapPanel>
                 <TextBlock Text="{Binding Texts.Dict[TbLessonEdit]}" Style="{DynamicResource tbMainSub}"></TextBlock>
@@ -62,7 +77,25 @@
             <Button Content="{Binding Texts.Dict[BtnShowChangeLessonSection]}" Command="{Binding ShowChangeLessonNameSectionCmd}"
                     Visibility="{Binding IsChangeNameVisible, Converter={StaticResource invBoolToVisibility}}"></Button>
 
-            <DataGrid ItemsSource="{Binding }"></DataGrid>
+            <ListView ItemsSource="{Binding Words}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel MinWidth="300">
+                            <TextBox Text="{Binding DefinitionLang1, UpdateSourceTrigger=PropertyChanged}">
+                                <userControls:WatermarkService.Watermark>
+                                    <StaticResource ResourceKey="wmLangDefinition1"></StaticResource>
+                                </userControls:WatermarkService.Watermark>
+                            </TextBox>
+                            <TextBox Text="{Binding DefinitionLang2, UpdateSourceTrigger=PropertyChanged}">
+                                <userControls:WatermarkService.Watermark>
+                                    <StaticResource ResourceKey="wmLangDefinition2"></StaticResource>
+                                </userControls:WatermarkService.Watermark>
+                            </TextBox>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                
+            </ListView>
         </StackPanel>
     </DockPanel>
 </UserControl>

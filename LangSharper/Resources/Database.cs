@@ -63,19 +63,23 @@ namespace LangSharper
             [PrimaryKey, AutoIncrement]
             public int Id { get; set; }
 
-            [Indexed(Name = "Definition", Order = 1, Unique = true), MaxLength(64), NotNull]
+
+            [Indexed(Name = "Definition", Order = 2, Unique = true), MaxLength(64), NotNull]
             public string DefinitionLang1
             {
                 get { return _definitionLang1; } 
                 set { _definitionLang1 = value; }
             }
 
-            [Indexed(Name = "Definition", Order = 2, Unique = true), MaxLength(64), NotNull]
+            [Indexed(Name = "Definition", Order = 3, Unique = true), MaxLength(64), NotNull]
             public string DefinitionLang2
             {
                 get { return _definitionLang2; }
                 set { _definitionLang2 = value; }
             }
+
+            [Indexed(Name = "Definition", Order = 1, Unique = true), NotNull]
+            public int? LessonId { get { return _lessonId; } set { _lessonId = value; } }
 
             public short Level {
                 get { return _level; }
@@ -94,8 +98,6 @@ namespace LangSharper
                 set { _hasImage = value; }
             }
 
-            [NotNull]
-            public int? LessonId { get { return _lessonId; } set { _lessonId = value; } }
         }
 
         public Database(string fileName)
@@ -103,6 +105,7 @@ namespace LangSharper
             FileName = fileName;
             if (File.Exists(fileName))
                 return;
+
 
             using (var db = new SQLiteConnection(new SQLitePlatformWin32(), fileName))
             {
