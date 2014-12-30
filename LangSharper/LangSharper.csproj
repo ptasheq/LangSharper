@@ -80,8 +80,11 @@
     </ApplicationDefinition>
     <Compile Include="Resources\AppCommand.cs" />
     <Compile Include="Resources\Database.cs" />
+    <Compile Include="Resources\DragDropBehavior.cs" />
+    <Compile Include="Resources\ExtendedWord.cs" />
     <Compile Include="Resources\Globals.cs" />
     <Compile Include="Resources\InverseBoolConverter.cs" />
+    <Compile Include="Resources\NullToVisibilityConverter.cs" />
     <Compile Include="UserControls\ErrorControl.xaml.cs">
       <DependentUpon>ErrorControl.xaml</DependentUpon>
     </Compile>

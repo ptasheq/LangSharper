@@ -18,7 +18,8 @@ namespace LangSharperTests
             PropertyFinder.CreateInstance(new Dictionary<string, object>
             {
                 { "UiTexts", uiTexts }, 
-                { "DatabasePath", Globals.Path + "testdatabase.sqlite" }
+                { "DatabasePath", Globals.Path + "testdatabase.sqlite" },
+                { "CurrentUser", new Database.User { Name = "testuser" }}
             });
             var d = new Database(PropertyFinder.Instance.Resource["DatabasePath"].ToString());
         }

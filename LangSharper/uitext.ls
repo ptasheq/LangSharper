@@ -24,6 +24,8 @@ BtnChangeLessonName:Zatwierdź nazwę lekcji
 BtnShowChangeLessonSection:Zmień nazwę lekcji
 WtmNewLangDefinition1:Podaj definicję w pierwszym języku
 WtmNewLangDefinition2:Podaj definicję w drugim języku
+TbNoImage:Brak obrazka - przeciągnij
+BtnAddWord:Dodaj słowo
 
 TbMainLearning:Nauka
 TbMainSimpleLearning:Tryb prosty
@@ -39,3 +41,9 @@ ErrControlButton:Ok, rozumiem
 ExTooShortUserName:Podano zbyt krótką nazwę użytkownika!
 ExWrongWordLevelValue:Podano nieprawidłowy poziom opanowania słowa!
 ExLessonNameDuplicate:Dany użytkownik posiada już lekcję o tej nazwie. Proszę wybrać inną nazwę dla tej lekcji.
+ExWrongViewForAction:Akcja niemożliwa do wykonania w danym widoku.
+ExLessonNotSpecified:Nie podano jako parametru poprawnej lekcji!
+ExUserNotSpecified:Nie podano jako parametru poprawnego użytkownika!
+ExDefinitionsFirst:Proszę najpierw uzupełnić definicje słowne.
+ExWrongItemDropped:Przeciągnięty element nie jest plikiem graficznym!
+ExWordNumberLimitReached:Osiągnięto dopuszczalny limit słów w lekcji!

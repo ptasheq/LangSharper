@@ -175,6 +175,9 @@ UpgradeLog*.htm
 *.mdf
 *.ldf
 
+#Thumbs
+Thumbs.db
+
 # Business Intelligence projects
 *.rdl.data
 *.bim.layout

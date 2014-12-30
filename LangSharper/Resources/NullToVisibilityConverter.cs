@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
-namespace LangSharper
-{
-    [ValueConversion(typeof(bool), typeof(bool))]
-    public class InverseBooleanToVisibilityConverter : IValueConverter
+namespace LangSharper {
+
+    public class EmptyStringToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
             if (targetType != typeof(Visibility))
                 throw new InvalidOperationException("The target must be a visibility");
+            if (value != null && !(value is string))
+                throw new ArgumentException("The parameter must be a string");
 
-            return (bool) value ? Visibility.Collapsed : Visibility.Visible;
+            return (value != null && (value as String).Length > 0) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,

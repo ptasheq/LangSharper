@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using SQLite.Net;
 using SQLite.Net.Attributes;
@@ -25,8 +26,7 @@ namespace LangSharper
                 set
                 {
                     if (value.Length < UserNameMinLength)
-                        throw new ArgumentException(
-                            (PropertyFinder.Instance.GetResource("UiTexts") as UiTexts).GetText("ExTooShortUserName"));
+                        throw new ArgumentException("ExTooShortUserName");
                     _name = value;
                 }
             }
@@ -81,13 +81,38 @@ namespace LangSharper
             [Indexed(Name = "Definition", Order = 1, Unique = true), NotNull]
             public int? LessonId { get { return _lessonId; } set { _lessonId = value; } }
 
+            public String GetImagePath(User user, Lesson lesson)
+            {
+                if (!HasImage)
+                {
+                    return null;
+                }
+
+                if (lesson == null || lesson.Name == null || lesson.Name.Length < 1)
+                {
+                    throw new NullReferenceException("ExLessonNotSpecified");
+                }
+
+                if (user == null)
+                {
+                    throw new NullReferenceException("ExUserNotSpecified");
+                }
+
+                if (_definitionLang1 == null || _definitionLang2 == null)
+                {
+                    throw new NullReferenceException("ExWrongViewForAction");
+                }
+                
+                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Globals.AppName,
+                                    user.Name, lesson.Name, _definitionLang1 + "_" + _definitionLang2 + ".png");
+            }
+            
             public short Level {
                 get { return _level; }
                 set
                 {
                     if (value < 0 || value > 7)
-                        throw new ArgumentException(
-                            (PropertyFinder.Instance.GetResource("UiTexts") as UiTexts).GetText("ExWrongWordLevelValue"));
+                        throw new ArgumentException("ExWrongWordLevelValue");
                     _level = value;
                 } 
             }
@@ -114,6 +139,5 @@ namespace LangSharper
                 db.CreateTable<Word>();
             }
         }
-
     }
 }

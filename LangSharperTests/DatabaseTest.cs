@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq.Expressions;
+using LangSharper.ViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LangSharper;
 using SQLite.Net;
@@ -66,7 +69,7 @@ namespace LangSharperTests
                 }
                 catch (ArgumentException e)
                 {
-                    StringAssert.Contains(e.Message, uiTexts.GetText("ExTooShortUserName"));
+                    StringAssert.Contains(uiTexts.GetText(e.Message), uiTexts.GetText("ExTooShortUserName"));
                 }
                 Assert.AreEqual(2, db.Table<Database.User>().Count());
 
@@ -214,7 +217,7 @@ namespace LangSharperTests
                 }
                 catch (ArgumentException e)
                 {
-                    StringAssert.Contains(e.Message, uiTexts.GetText("ExWrongWordLevelValue"));
+                    Assert.AreEqual(uiTexts.GetText(e.Message), uiTexts.GetText("ExWrongWordLevelValue"));
                 }
 
                 try
@@ -224,9 +227,69 @@ namespace LangSharperTests
                 }
                 catch (ArgumentException e)
                 {
-                    StringAssert.Contains(e.Message, uiTexts.GetText("ExWrongWordLevelValue"));
+                    Assert.AreEqual(uiTexts.GetText(e.Message), uiTexts.GetText("ExWrongWordLevelValue"));
                 }
             }
+        }
+        [TestMethod]
+        public void GetImagePathTest()
+        {
+            PropertyFinder.CreateInstance(new Dictionary<string, object>
+            {
+                { "DatabasePath", Globals.Path + "testdatabase.sqlite" },
+                { "CurrentUser", new Database.User { Name = "testuser"} }
+            });
+            var word = new Database.Word() { DefinitionLang1 = "kot", DefinitionLang2 = "a cat", LessonId = 1, HasImage = true };
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                                       Globals.AppName, (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name,
+                                       "testlesson", word.DefinitionLang1 + "_" + word.DefinitionLang2 + ".png");
+
+            try
+            {
+                word.GetImagePath(PropertyFinder.Instance.Resource["CurrentUser"] as Database.User, null);
+                Assert.Fail("Exception should appear");
+            }
+            catch (NullReferenceException e)
+            {
+                Assert.AreEqual("ExLessonNotSpecified", e.Message);
+            }
+
+            try
+            {
+                word.GetImagePath(PropertyFinder.Instance.Resource["CurrentUser"] as Database.User, new Database.Lesson { Name = "" });
+                Assert.Fail("Exception should appear");
+            }
+            catch (NullReferenceException e)
+            {
+                Assert.AreEqual("ExLessonNotSpecified", e.Message);
+            }
+            
+            var lesson = new Database.Lesson { Id = 5, Name = "testlesson" };
+            try
+            {
+                word.GetImagePath(null, lesson);
+                Assert.Fail("Exception should appear");
+            }
+            catch (NullReferenceException e)
+            {
+                Assert.AreEqual("ExUserNotSpecified", e.Message);
+            }
+
+            try
+            {
+                var word2 = new Database.Word{ HasImage = true };
+                word2.GetImagePath(PropertyFinder.Instance.Resource["CurrentUser"] as Database.User, lesson);
+                Assert.Fail("Exception should appear");
+            }
+            catch (NullReferenceException e)
+            {
+                Assert.AreEqual("ExWrongViewForAction", e.Message);
+            }
+
+            Assert.AreEqual(path, word.GetImagePath(PropertyFinder.Instance.Resource["CurrentUser"] as Database.User, lesson));
+
+            word.HasImage = false;
+            Assert.AreEqual(null, word.GetImagePath(PropertyFinder.Instance.Resource["CurrentUser"] as Database.User, lesson));
         }
     }
 }

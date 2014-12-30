@@ -48,7 +48,7 @@
             <StackPanel>
                 <TextBlock Style="{StaticResource sbMain}" Text="{Binding Texts.Dict[ErrControlTitle]}"></TextBlock>
                 <TextBlock Text="{Binding ErrorMessage}"></TextBlock>
-                <Button Content="{Binding Texts.Dict[ErrControlButton]}"></Button>
+                <Button Content="{Binding Texts.Dict[ErrControlButton]}" Command="{Binding HideError}"></Button>
             </StackPanel>
         </Grid>
     </Border>

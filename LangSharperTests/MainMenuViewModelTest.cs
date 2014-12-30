@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using LangSharper.ViewModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,6 +11,8 @@ namespace LangSharperTests
     [TestClass]
     public class MainMenuViewModelTest
     {
+        string path;
+
         [TestInitialize]
         public void TestInit()
         {
@@ -18,9 +21,20 @@ namespace LangSharperTests
             PropertyFinder.CreateInstance(new Dictionary<string, object>
             {
                 { "UiTexts", uiTexts }, 
-                { "DatabasePath", Globals.Path + "testdatabase.sqlite" }
+                { "DatabasePath", Globals.Path + "testdatabase.sqlite" },
+                { "CurrentUser", new Database.User { Name = "testuser"}}
             });
             var d = new Database(PropertyFinder.Instance.Resource["DatabasePath"].ToString());
+            path = Path.Combine(Globals.ResourcePath, (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name); 
+        }
+
+        [TestMethod]
+        public void ConstructorTest()
+        {
+            var vm = new MainMenuViewModel();
+            Debug.WriteLine(path);
+            Assert.IsTrue(Directory.Exists(path));
+            vm = new MainMenuViewModel();
         }
 
         [TestMethod]
@@ -41,6 +55,12 @@ namespace LangSharperTests
                 pair.Key.Execute(0);
                 Assert.IsInstanceOfType(PropertyFinder.Instance.CurrentModel, pair.Value);
             }
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            Directory.Delete(path, true);
         }
     }
 }

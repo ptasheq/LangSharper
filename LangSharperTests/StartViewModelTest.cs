@@ -93,7 +93,7 @@ namespace LangSharperTests
 
             m.ChooseUserCmd.Execute(0);
 
-            Assert.AreEqual(user.Id, PropertyFinder.Instance.Resource["CurrentUserId"]);
+            Assert.AreEqual(user.Id, (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Id);
             Assert.IsInstanceOfType(PropertyFinder.Instance.CurrentModel, typeof(MainMenuViewModel));
         }
     }

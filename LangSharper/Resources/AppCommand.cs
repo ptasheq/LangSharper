@@ -5,14 +5,22 @@ namespace LangSharper
 {
     public class AppCommand : ICommand
     {
-        readonly Action _action;
+        readonly Action<object> _action;
         readonly Func<bool> _canExecute;
+
+        public AppCommand(Action<object> action) : this(action, null)
+        {
+        }
 
         public AppCommand(Action action) : this(action, null)
         {
         }
 
-        public AppCommand(Action action, Func<bool> canExecute)
+        public AppCommand(Action action, Func<bool> canExecute) : this(o => action(), canExecute)
+        {
+        }
+
+        public AppCommand(Action<object> action, Func<bool> canExecute)
         {
             _action = action;
             _canExecute = canExecute;
@@ -30,7 +38,7 @@ namespace LangSharper
 
         public void Execute(object parameter)
         {
-            _action();
+            _action(parameter);
         }
 
         public event EventHandler CanExecuteChanged
