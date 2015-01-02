@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using SQLite.Net;
 using SQLite.Net.Attributes;
@@ -9,6 +8,7 @@ namespace LangSharper
 {
     public sealed class Database
     {
+        private static string _appName;
         public string FileName { get; private set; }
         const int UserNameMinLength = 3;
 
@@ -53,29 +53,33 @@ namespace LangSharper
 
         public class Word
         {
-
             int? _lessonId = null;
             bool _hasImage = false;
             string _definitionLang1 = null;
             string _definitionLang2 = null;
             short _level = 0;
 
+            protected delegate void Del();
+
+            protected Del DefLang1 = () => {};
+            protected Del DefLang2 = () => {};
+            protected Del HasImg = () => {};
+
             [PrimaryKey, AutoIncrement]
             public int Id { get; set; }
-
 
             [Indexed(Name = "Definition", Order = 2, Unique = true), MaxLength(64), NotNull]
             public string DefinitionLang1
             {
                 get { return _definitionLang1; } 
-                set { _definitionLang1 = value; }
+                set { _definitionLang1 = value; DefLang1(); }
             }
 
             [Indexed(Name = "Definition", Order = 3, Unique = true), MaxLength(64), NotNull]
             public string DefinitionLang2
             {
                 get { return _definitionLang2; }
-                set { _definitionLang2 = value; }
+                set { _definitionLang2 = value; DefLang2(); }
             }
 
             [Indexed(Name = "Definition", Order = 1, Unique = true), NotNull]
@@ -103,7 +107,7 @@ namespace LangSharper
                     throw new NullReferenceException("ExWrongViewForAction");
                 }
                 
-                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Globals.AppName,
+                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), _appName,
                                     user.Name, lesson.Name, _definitionLang1 + "_" + _definitionLang2 + ".png");
             }
             
@@ -120,17 +124,16 @@ namespace LangSharper
             public bool HasImage
             {
                 get { return _hasImage; }
-                set { _hasImage = value; }
+                set { _hasImage = value; HasImg(); }
             }
-
         }
 
-        public Database(string fileName)
+        public Database(string appName, string fileName)
         {
+            _appName = appName;
             FileName = fileName;
             if (File.Exists(fileName))
                 return;
-
 
             using (var db = new SQLiteConnection(new SQLitePlatformWin32(), fileName))
             {

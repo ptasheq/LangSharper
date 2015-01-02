@@ -21,7 +21,7 @@ namespace LangSharperTests
                 { "DatabasePath", Globals.Path + "testdatabase.sqlite" },
                 { "CurrentUser", new Database.User { Name = "testuser" }}
             });
-            var d = new Database(PropertyFinder.Instance.Resource["DatabasePath"].ToString());
+            var d = new Database(Globals.AppName, PropertyFinder.Instance.Resource["DatabasePath"].ToString());
         }
 
         [TestMethod]

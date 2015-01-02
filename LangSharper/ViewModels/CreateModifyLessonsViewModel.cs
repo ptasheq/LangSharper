@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -14,14 +16,16 @@ namespace LangSharper.ViewModels
 {
     public class CreateModifyLessonsViewModel : BaseViewModel
     {
+
         public CreateModifyLessonsViewModel()
         {
             PreviousCmd = new AppCommand(() => { PropertyFinder.Instance.CurrentModel = GetViewModel<ManageLessonsViewModel>(); });
             ChangeLessonNameCmd = new AppCommand(ChangeLessonName, () => !string.IsNullOrEmpty(NewName));
             ShowChangeLessonNameSectionCmd = new AppCommand(ShowChangeLessonSectionName, () => IsChangeNameVisible.Equals(false));
             DropImageCmd = new AppCommand(DropImage);
-            AddWordItemCmd = new AppCommand(AddWordItem, () => ExtendedWords.All(w => !string.IsNullOrEmpty(w.Word.DefinitionLang1) 
-                                                                                 && !string.IsNullOrEmpty(w.Word.DefinitionLang2)));
+            AddWordItemCmd = new AppCommand(() => AddWordItem(), () => ExtendedWords.All(w => !string.IsNullOrEmpty(w.DefinitionLang1) 
+                                                                                         && !string.IsNullOrEmpty(w.DefinitionLang2)));
+            ConfirmChangesCmd = new AppCommand(ConfirmChanges);
         }
 
         public AppCommand PreviousCmd { get; private set; }
@@ -29,6 +33,7 @@ namespace LangSharper.ViewModels
         public AppCommand ShowChangeLessonNameSectionCmd { get; private set; }
         public AppCommand DropImageCmd { get; private set; }
         public AppCommand AddWordItemCmd { get; private set; }
+        public AppCommand ConfirmChangesCmd { get; private set; }
 
         public override void OnViewActivate()
         {
@@ -38,10 +43,8 @@ namespace LangSharper.ViewModels
             {
                 Lesson = new Database.Lesson { Name = null, UserId = (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Id };
                 IsChangeNameVisible = true;
-                ExtendedWords = new ObservableCollection<ExtendedWord>
-                {
-                    new ExtendedWord(new Database.Word { LessonId = Lesson.Id })
-                };
+                ExtendedWords = new ObservableCollection<ExtendedWord>(); 
+                AddWordItem();
             }
             else
             {
@@ -50,11 +53,42 @@ namespace LangSharper.ViewModels
                 using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString()))
                 {
                     ExtendedWords = new ObservableCollection<ExtendedWord>();
-                    foreach (var word in db.Table<Database.Word>().Where(w => w.LessonId == Lesson.Id))
+                    foreach (var word in db.Table<Database.Word>().Where(w => w.LessonId == Lesson.Id).OrderBy(e => e.Id))
                     {
-                           ExtendedWords.Add(new ExtendedWord(word));
+                        AddWordItem(word);
                     }
                 }
+            }
+            _areChangesSaved = true;
+        }
+
+        void ConfirmChanges()
+        {
+            if (_areChangesSaved)
+            {
+                ShowError("ExNoChangesToConfirm");
+                return;
+            }
+
+            try
+            {
+                using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString())) 
+                {
+                    db.RunInTransaction(() =>
+                    {
+                        db.InsertOrReplaceAll(ExtendedWords.Where(w => !w.IsNew), typeof(Database.Word));
+                        foreach (var word in ExtendedWords.Where(w => w.IsNew))
+                        {
+                            db.Insert(word, typeof(Database.Word));
+                            word.IsNew = false;
+                        } 
+                    });
+                }
+                _areChangesSaved = true;
+            }
+            catch (SQLiteException e)
+            {
+                ShowError(e.Message.Contains("Constraint") ? "ExDefinitionsFirst" : "ExUnknownError");
             }
         }
 
@@ -80,20 +114,28 @@ namespace LangSharper.ViewModels
                 return;
             }
 
-            var currentWord = ExtendedWords.First(w => w.Word.DefinitionLang1 == def1 && w.Word.DefinitionLang2 == def2);
-            currentWord.HasImage = true;
+            List<ExtendedWord> currentWords = ExtendedWords.Where(w => w.DefinitionLang1 == def1 && w.DefinitionLang2 == def2).ToList();
+            if (currentWords.Count() > 1)
+            {
+               ShowError("ExDropImageDefinitions");
+               return;
+            }
+
+            var areChangesSavedTmp = _areChangesSaved;
+            currentWords[0].HasImage = true;
             try
             {
-                if (File.Exists(currentWord.ImagePath.AbsolutePath))
+                if (File.Exists(currentWords[0].ImagePath.AbsolutePath))
                 {
-                    File.Delete(currentWord.ImagePath.AbsolutePath);
+                    File.Delete(currentWords[0].ImagePath.AbsolutePath);
                 }
-                File.Copy(dataObject.GetFileDropList()[0], currentWord.ImagePath.AbsolutePath);
-                currentWord.ImagePathChanged();
+                File.Copy(dataObject.GetFileDropList()[0], currentWords[0].ImagePath.AbsolutePath);
+                currentWords[0].ImagePathChanged();
             }
             catch (Exception e)
             {
-                currentWord.HasImage = false;
+                currentWords[0].HasImage = false;
+                _areChangesSaved = areChangesSavedTmp;
                 ShowError(e.Message); 
             }
         }
@@ -135,16 +177,25 @@ namespace LangSharper.ViewModels
             OnPropertyChanged("IsChangeNameVisible");
         }
 
-        void AddWordItem()
+        void AddWordItem(Database.Word word = null)
         {
             if (ExtendedWords.Count == Globals.MaxWordsForLesson)
             {
                 ShowError("ExWordNumberLimitReached");
                 return;
             }
-            ExtendedWords.Add(new ExtendedWord(new Database.Word { LessonId = Lesson.Id }));  
+            ExtendedWords.Add(word == null ? new ExtendedWord(true) { LessonId = Lesson.Id } : new ExtendedWord(word));  
+            ExtendedWords[ExtendedWords.Count-1].PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
+            {
+                if (args.PropertyName == "DefinitionLang1" 
+                    || args.PropertyName == "DefinitionLang2" || args.PropertyName == "HasImage")
+                {
+                    _areChangesSaved = false;
+                }
+            };
         }
 
+        bool _areChangesSaved;
         public string NewName { get; set; }
         public bool IsChangeNameVisible { get; set; }
         public Database.Lesson Lesson { get; private set; }

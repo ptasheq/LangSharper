@@ -23,13 +23,13 @@ namespace LangSharperTests
                 { "UiTexts", uiTexts }, 
                 { "DatabasePath", Globals.Path + "testdatabase.sqlite" }
             });
-            Database d = new Database(PropertyFinder.Instance.Resource["DatabasePath"].ToString());
+            Database d = new Database(Globals.AppName, PropertyFinder.Instance.Resource["DatabasePath"].ToString());
 
             using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString()))
             {
-                db.Insert(new Database.User() {Name = "testuser"});
-                db.Insert(new Database.User() {Name = "testuser2"});
-                db.Insert(new Database.User() {Name = "testuser3"});
+                db.Insert(new Database.User { Name = "testuser" });
+                db.Insert(new Database.User { Name = "testuser2" });
+                db.Insert(new Database.User { Name = "testuser3" });
             }
         }
 

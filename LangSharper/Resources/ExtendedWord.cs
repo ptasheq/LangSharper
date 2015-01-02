@@ -1,16 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using LangSharper.Annotations;
 
 namespace LangSharper.Resources
 {
-    public class ExtendedWord : INotifyPropertyChanged
+    public class ExtendedWord : Database.Word, INotifyPropertyChanged
     {
-        public Database.Word Word { get; private set; }
         Uri _lastImagePath;
+
         public Uri ImagePath {
             get
             {
@@ -21,17 +20,17 @@ namespace LangSharper.Resources
                 }
 
                 var lesson = type.GetProperty("Lesson").GetValue(PropertyFinder.Instance.CurrentModel, null) as Database.Lesson;
-                if (lesson.Name == null || HasImage == false)
+                if (lesson == null || lesson.Name == null || HasImage == false)
                 {
                     return new Uri(Path.GetFullPath(Globals.Path + "NullImage.png"));
                 }
                 if (_lastImagePath != null && _lastImagePath.OriginalString !=
-                    Word.GetImagePath(PropertyFinder.Instance.Resource["CurrentUser"] as Database.User, lesson))
+                    GetImagePath(PropertyFinder.Instance.Resource["CurrentUser"] as Database.User, lesson))
                 {
                     File.Move(_lastImagePath.AbsolutePath,
-                              Word.GetImagePath(PropertyFinder.Instance.Resource["CurrentUser"] as Database.User, lesson));
+                              GetImagePath(PropertyFinder.Instance.Resource["CurrentUser"] as Database.User, lesson));
                 }
-                _lastImagePath = new Uri(Word.GetImagePath(PropertyFinder.Instance.Resource["CurrentUser"] as Database.User, lesson));
+                _lastImagePath = new Uri(GetImagePath(PropertyFinder.Instance.Resource["CurrentUser"] as Database.User, lesson));
                 return _lastImagePath;
             }
         }
@@ -41,17 +40,30 @@ namespace LangSharper.Resources
             OnPropertyChanged("ImagePath"); 
         }
 
-        public bool HasImage
+        public ExtendedWord()
         {
-            get { return Word.HasImage; }
-            set { Word.HasImage = value; OnPropertyChanged();}
+            _lastImagePath = null;
+            DefLang1 = () => OnPropertyChanged("DefinitionLang1");
+            DefLang2 = () => OnPropertyChanged("DefinitionLang2");
+            HasImg = () => OnPropertyChanged("HasImage");
         }
 
-        public ExtendedWord(Database.Word word)
+        public ExtendedWord(bool isNew) : this()
         {
-            Word = word;
-            _lastImagePath = null;
+            IsNew = isNew;
         }
+
+        public ExtendedWord(Database.Word w) : this()
+        {
+            Id = w.Id;
+            DefinitionLang1 = w.DefinitionLang1;
+            DefinitionLang2 = w.DefinitionLang2;
+            HasImage = w.HasImage;
+            LessonId = w.LessonId;
+            Level = w.Level;
+        }
+
+        public bool IsNew { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

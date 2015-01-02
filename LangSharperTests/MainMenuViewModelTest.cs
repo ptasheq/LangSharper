@@ -24,7 +24,7 @@ namespace LangSharperTests
                 { "DatabasePath", Globals.Path + "testdatabase.sqlite" },
                 { "CurrentUser", new Database.User { Name = "testuser"}}
             });
-            var d = new Database(PropertyFinder.Instance.Resource["DatabasePath"].ToString());
+            var d = new Database(Globals.AppName, PropertyFinder.Instance.Resource["DatabasePath"].ToString());
             path = Path.Combine(Globals.ResourcePath, (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name); 
         }
 
@@ -32,7 +32,6 @@ namespace LangSharperTests
         public void ConstructorTest()
         {
             var vm = new MainMenuViewModel();
-            Debug.WriteLine(path);
             Assert.IsTrue(Directory.Exists(path));
             vm = new MainMenuViewModel();
         }

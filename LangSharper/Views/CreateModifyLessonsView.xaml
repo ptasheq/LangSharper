@@ -99,12 +99,12 @@
                                 </Border>
 
                                 <StackPanel Margin="5,0,0,0" Grid.Column="1">
-                                    <TextBox Margin="0,0,0,5" Text="{Binding Word.DefinitionLang1, UpdateSourceTrigger=PropertyChanged}">
+                                    <TextBox Margin="0,0,0,5" Text="{Binding DefinitionLang1, UpdateSourceTrigger=PropertyChanged}">
                                         <userControls:WatermarkService.Watermark>
                                             <StaticResource ResourceKey="wmLangDefinition1"></StaticResource>
                                         </userControls:WatermarkService.Watermark>
                                     </TextBox>
-                                    <TextBox Text="{Binding Word.DefinitionLang2, UpdateSourceTrigger=PropertyChanged}">
+                                    <TextBox Text="{Binding DefinitionLang2, UpdateSourceTrigger=PropertyChanged}">
                                         <userControls:WatermarkService.Watermark>
                                             <StaticResource ResourceKey="wmLangDefinition2"></StaticResource>
                                         </userControls:WatermarkService.Watermark>

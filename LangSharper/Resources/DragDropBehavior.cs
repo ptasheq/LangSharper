@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace LangSharper.Resources
@@ -33,7 +27,7 @@ namespace LangSharper.Resources
 
             uiElement.Drop += (sender, args) =>
             {
-                var word = ((sender as FrameworkElement).DataContext as ExtendedWord).Word;
+                var word = ((sender as FrameworkElement).DataContext as ExtendedWord);
                 GetDropCommand(uiElement).Execute(new Tuple<string, string, IDataObject> (word.DefinitionLang1, word.DefinitionLang2, args.Data));
                 args.Handled = true;
             };

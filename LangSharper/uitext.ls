@@ -45,5 +45,8 @@ ExWrongViewForAction:Akcja niemożliwa do wykonania w danym widoku.
 ExLessonNotSpecified:Nie podano jako parametru poprawnej lekcji!
 ExUserNotSpecified:Nie podano jako parametru poprawnego użytkownika!
 ExDefinitionsFirst:Proszę najpierw uzupełnić definicje słowne.
+ExDropImageDefinitions:W lekcji znajdują się dwa wpisy o tych samych definicjach. Proszę dokonać korekty.
 ExWrongItemDropped:Przeciągnięty element nie jest plikiem graficznym!
 ExWordNumberLimitReached:Osiągnięto dopuszczalny limit słów w lekcji!
+ExNoChangesToConfirm:Nie ma żadnych zmian do potwierdzenia!
+ExUnknownError:Wystąpił nieznany błąd. Proszę spróbować ponownie wykonać poprzednią akcję.
