@@ -17,6 +17,8 @@ TbSubManageLessons:Co chcesz zrobić?
 BtnCreateNewLesson:Utwórz nową lekcję
 BtnEditChosenLesson:Edytuj wybraną lekcję
 BtnDeleteChosenLesson:Usuń wybraną lekcję
+DgcLessonName:Nazwa lekcji
+DgcWordCount:Liczba słów
 
 TbLessonEdit:Edytujesz - 
 WtmNewLessonName:Podaj nazwę lekcji
@@ -26,6 +28,7 @@ WtmNewLangDefinition1:Podaj definicję w pierwszym języku
 WtmNewLangDefinition2:Podaj definicję w drugim języku
 TbNoImage:Brak obrazka - przeciągnij
 BtnAddWord:Dodaj słowo
+BtnConfirmChanges:Zatwierdź zmiany w lekcji
 
 TbMainLearning:Nauka
 TbMainSimpleLearning:Tryb prosty
@@ -47,6 +50,8 @@ ExUserNotSpecified:Nie podano jako parametru poprawnego użytkownika!
 ExDefinitionsFirst:Proszę najpierw uzupełnić definicje słowne.
 ExDropImageDefinitions:W lekcji znajdują się dwa wpisy o tych samych definicjach. Proszę dokonać korekty.
 ExWrongItemDropped:Przeciągnięty element nie jest plikiem graficznym!
+ExNotEnoughWords:Podano za mało słów. Minimalna ich liczba w lekcji to {0}
 ExWordNumberLimitReached:Osiągnięto dopuszczalny limit słów w lekcji!
 ExNoChangesToConfirm:Nie ma żadnych zmian do potwierdzenia!
+ExNoLessonChosen:Nie wybrano żadnej lekcji do edycji!
 ExUnknownError:Wystąpił nieznany błąd. Proszę spróbować ponownie wykonać poprzednią akcję.

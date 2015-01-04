@@ -42,82 +42,80 @@
         <langSharper:EmptyStringToVisibilityConverter x:Key="emptyStringToVisibility" />
         <langSharper:InverseBooleanToVisibilityConverter x:Key="invBoolToVisibility"/>
     </UserControl.Resources>
-    <Grid>
-        <DockPanel DataContext="{Binding}">
-            <Button Style="{StaticResource btnPrevious}" DockPanel.Dock="Left" 
-                    Content="{Binding Texts.Dict[BtnPrevious]}" Command="{Binding PreviousCmd}">
-                <Button.LayoutTransform>
-                    <RotateTransform Angle="-90"></RotateTransform>
-                </Button.LayoutTransform>
-            </Button>
+    <DockPanel DataContext="{Binding}">
+        <Button Style="{StaticResource btnPrevious}" DockPanel.Dock="Left" 
+                Content="{Binding Texts.Dict[BtnPrevious]}" Command="{Binding PreviousCmd}">
+            <Button.LayoutTransform>
+                <RotateTransform Angle="-90"></RotateTransform>
+            </Button.LayoutTransform>
+        </Button>
 
-            <StackPanel Name="sp" DockPanel.Dock="Right" >
-                <StackPanel.Resources>
-                    <TextBlock x:Key="wmLangDefinition1" Text="{Binding Source={x:Reference sp}, Path=DataContext.Texts.Dict[WtmNewLangDefinition1]}"></TextBlock>
-                    <TextBlock x:Key="wmLangDefinition2" Text="{Binding Source={x:Reference sp}, Path=DataContext.Texts.Dict[WtmNewLangDefinition2]}"></TextBlock>
-                </StackPanel.Resources>
+        <StackPanel Name="sp" DockPanel.Dock="Right" >
+            <StackPanel.Resources>
+                <TextBlock x:Key="wmLangDefinition1" Text="{Binding Source={x:Reference sp}, Path=DataContext.Texts.Dict[WtmNewLangDefinition1]}"></TextBlock>
+                <TextBlock x:Key="wmLangDefinition2" Text="{Binding Source={x:Reference sp}, Path=DataContext.Texts.Dict[WtmNewLangDefinition2]}"></TextBlock>
+            </StackPanel.Resources>
 
-                <TextBlock Margin="0" Text="{Binding Texts.Dict[TbMainManageLessons]}" Style="{DynamicResource tbMain}"></TextBlock>
-                <WrapPanel>
-                    <TextBlock Text="{Binding Texts.Dict[TbLessonEdit]}" Style="{DynamicResource tbMainSub}"></TextBlock>
-                    <TextBlock Text="{Binding Lesson.Name}" Style="{DynamicResource tbMainSub}"></TextBlock>
-                </WrapPanel>
+            <TextBlock Margin="0" Text="{Binding Texts.Dict[TbMainManageLessons]}" Style="{DynamicResource tbMain}"></TextBlock>
+            <WrapPanel>
+                <TextBlock Text="{Binding Texts.Dict[TbLessonEdit]}" Style="{DynamicResource tbMainSub}"></TextBlock>
+                <TextBlock Text="{Binding Lesson.Name}" Style="{DynamicResource tbMainSub}"></TextBlock>
+            </WrapPanel>
 
-                <Grid Style="{StaticResource thinnerGrid}" Visibility="{Binding IsChangeNameVisible, Converter={StaticResource boolToVisibility}}">
-                    <Border>
-                        <StackPanel Style="{StaticResource spChangeEdit}">
-                            <TextBox Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}">
-                                <userControls:WatermarkService.Watermark>
-                                    <TextBlock Text="{Binding Texts.Dict[WtmNewLessonName]}"></TextBlock>
-                                </userControls:WatermarkService.Watermark>
-                            </TextBox>
-                            <Button Content="{Binding Texts.Dict[BtnChangeLessonName]}" Command="{Binding ChangeLessonNameCmd}"></Button>
-                        </StackPanel>
-                    </Border>
-                </Grid>
+            <Grid Style="{StaticResource thinnerGrid}" Visibility="{Binding IsChangeNameVisible, Converter={StaticResource boolToVisibility}}">
+                <Border>
+                    <StackPanel Style="{StaticResource spChangeEdit}">
+                        <TextBox Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}">
+                            <userControls:WatermarkService.Watermark>
+                                <TextBlock Text="{Binding Texts.Dict[WtmNewLessonName]}"></TextBlock>
+                            </userControls:WatermarkService.Watermark>
+                        </TextBox>
+                        <Button Content="{Binding Texts.Dict[BtnChangeLessonName]}" Command="{Binding ChangeLessonNameCmd}"></Button>
+                    </StackPanel>
+                </Border>
+            </Grid>
 
-                <Button Content="{Binding Texts.Dict[BtnShowChangeLessonSection]}" Command="{Binding ShowChangeLessonNameSectionCmd}"
-                        Visibility="{Binding IsChangeNameVisible, Converter={StaticResource invBoolToVisibility}}"></Button>
+            <Button Content="{Binding Texts.Dict[BtnShowChangeLessonSection]}" Command="{Binding ShowChangeLessonNameSectionCmd}"
+                    Visibility="{Binding IsChangeNameVisible, Converter={StaticResource invBoolToVisibility}}"></Button>
 
-                <ListView ItemsSource="{Binding ExtendedWords}" Visibility="{Binding Lesson.Name, Converter={StaticResource emptyStringToVisibility}}" HorizontalContentAlignment="Stretch">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid MaxWidth="380">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="2*"></ColumnDefinition>
-                                    <ColumnDefinition Width="6*"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
+            <ListView ItemsSource="{Binding ExtendedWords}" Visibility="{Binding Lesson.Name, Converter={StaticResource emptyStringToVisibility}}" HorizontalContentAlignment="Stretch">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid MaxWidth="380">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"></ColumnDefinition>
+                                <ColumnDefinition Width="6*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
 
-                                <Image Stretch="Uniform" AllowDrop="True" Grid.Column="0" Visibility="{Binding HasImage, Converter={StaticResource boolToVisibility}}" Source="{Binding ImagePath}" 
-                                       resources:DragDropBehavior.DropCommand="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, 
-                                            Path=DataContext.DropImageCmd}" />
+                            <Image Stretch="Uniform" AllowDrop="True" Grid.Column="0" Visibility="{Binding HasImage, Converter={StaticResource boolToVisibility}}" Source="{Binding ImagePath}" 
+                                   resources:DragDropBehavior.DropCommand="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, 
+                                        Path=DataContext.DropImageCmd}" />
 
-                                <Border Grid.Column="0" BorderBrush="DarkGray" BorderThickness="1" resources:DragDropBehavior.DropCommand="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, 
-                                        Path=DataContext.DropImageCmd}" Visibility="{Binding HasImage, Converter={StaticResource invBoolToVisibility}}">
+                            <Border Grid.Column="0" BorderBrush="DarkGray" BorderThickness="1" resources:DragDropBehavior.DropCommand="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, 
+                                    Path=DataContext.DropImageCmd}" Visibility="{Binding HasImage, Converter={StaticResource invBoolToVisibility}}">
 
-                                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" AllowDrop="True" Text="{Binding Source={x:Reference sp}, Path=DataContext.Texts.Dict[TbNoImage]}"></TextBlock>
-                                </Border>
+                                <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" AllowDrop="True" Text="{Binding Source={x:Reference sp}, Path=DataContext.Texts.Dict[TbNoImage]}"></TextBlock>
+                            </Border>
 
-                                <StackPanel Margin="5,0,0,0" Grid.Column="1">
-                                    <TextBox Margin="0,0,0,5" Text="{Binding DefinitionLang1, UpdateSourceTrigger=PropertyChanged}">
-                                        <userControls:WatermarkService.Watermark>
-                                            <StaticResource ResourceKey="wmLangDefinition1"></StaticResource>
-                                        </userControls:WatermarkService.Watermark>
-                                    </TextBox>
-                                    <TextBox Text="{Binding DefinitionLang2, UpdateSourceTrigger=PropertyChanged}">
-                                        <userControls:WatermarkService.Watermark>
-                                            <StaticResource ResourceKey="wmLangDefinition2"></StaticResource>
-                                        </userControls:WatermarkService.Watermark>
-                                    </TextBox>
-                                </StackPanel>
+                            <StackPanel Margin="5,0,0,0" Grid.Column="1">
+                                <TextBox Margin="0,0,0,5" Text="{Binding DefinitionLang1, UpdateSourceTrigger=PropertyChanged}">
+                                    <userControls:WatermarkService.Watermark>
+                                        <StaticResource ResourceKey="wmLangDefinition1"></StaticResource>
+                                    </userControls:WatermarkService.Watermark>
+                                </TextBox>
+                                <TextBox Text="{Binding DefinitionLang2, UpdateSourceTrigger=PropertyChanged}">
+                                    <userControls:WatermarkService.Watermark>
+                                        <StaticResource ResourceKey="wmLangDefinition2"></StaticResource>
+                                    </userControls:WatermarkService.Watermark>
+                                </TextBox>
+                            </StackPanel>
 
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-                <Button Content="{Binding Texts.Dict[BtnAddWord]}" Visibility="{Binding Lesson.Name, Converter={StaticResource emptyStringToVisibility}}" Command="{Binding AddWordItemCmd}"></Button>
-            </StackPanel>
-        </DockPanel>
-        <userControls:ErrorControl></userControls:ErrorControl>
-    </Grid>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button Content="{Binding Texts.Dict[BtnConfirmChanges]}" Visibility="{Binding Lesson.Name, Converter={StaticResource emptyStringToVisibility}}" Command="{Binding ConfirmChangesCmd}"></Button>
+            <Button Content="{Binding Texts.Dict[BtnAddWord]}" Visibility="{Binding Lesson.Name, Converter={StaticResource emptyStringToVisibility}}" Command="{Binding AddWordItemCmd}"></Button>
+        </StackPanel>
+    </DockPanel>
 </UserControl>

@@ -10,6 +10,7 @@ namespace LangSharper
         public const string DatabaseFileName = "database.sqlite";
         public const string AppName = "langsharper";
         public static readonly string ResourcePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), AppName);
+        public const int MinWordsForLesson = 5;
         public const int MaxWordsForLesson = 30;
 
         public static void DeleteDirIfExists(string path, bool recursive)

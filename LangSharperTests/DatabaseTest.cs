@@ -21,7 +21,7 @@ namespace LangSharperTests
             Database d = new Database(Globals.AppName, Globals.Path + "testdatabase.sqlite");
             Assert.IsTrue(File.Exists(Globals.Path + "testdatabase.sqlite"));
 
-            using (var db = new SQLiteConnection(new SQLitePlatformWin32(), d.FileName))
+            using (var db = new SQLiteConnection(new SQLitePlatformWin32(), Database.FileName))
             {
                 Assert.AreEqual(0, db.Table<Database.User>().Count()); 
                 Assert.AreEqual(0, db.Table<Database.Lesson>().Count()); 
@@ -37,7 +37,7 @@ namespace LangSharperTests
             File.Delete(Globals.Path + "testdatabase.sqlite");
             Database d = new Database(Globals.AppName, Globals.Path + "testdatabase.sqlite");
 
-            using (var db = new SQLiteConnection(new SQLitePlatformWin32(), d.FileName))
+            using (var db = new SQLiteConnection(new SQLitePlatformWin32(), Database.FileName))
             {
                 db.InsertOrReplace(new Database.User { Name = "testuser"});
 
@@ -84,7 +84,7 @@ namespace LangSharperTests
             File.Delete(Globals.Path + "testdatabase.sqlite");
             Database d = new Database(Globals.AppName, Globals.Path + "testdatabase.sqlite");
 
-            using (var db = new SQLiteConnection(new SQLitePlatformWin32(), d.FileName))
+            using (var db = new SQLiteConnection(new SQLitePlatformWin32(), Database.FileName))
             {
                 var correctUser = new Database.User { Name = "testuser"};
                 db.Insert(correctUser);
@@ -105,16 +105,6 @@ namespace LangSharperTests
 
                 try
                 {
-                    db.Insert(new Database.Lesson { Name = "testlesson", UserId = correctUser2.Id });
-                    Assert.Fail("Exception should appear");
-                }
-                catch (SQLiteException e)
-                {
-                    StringAssert.Contains(e.Message, "Constraint");
-                }
-
-                try
-                {
                     db.Insert(new Database.Lesson { Name = "testlesson2" });
                 }
                 catch (NotNullConstraintViolationException e) {}
@@ -126,7 +116,7 @@ namespace LangSharperTests
         }
 
         [TestMethod]
-        public void InsertWordTest()
+        public void InsertWordAndWordCountTest()
         {
             PropertyFinder.CreateInstance(new Dictionary<string, object>
             {
@@ -135,16 +125,18 @@ namespace LangSharperTests
             File.Delete(Globals.Path + "testdatabase.sqlite");
             Database d = new Database(Globals.AppName, Globals.Path + "testdatabase.sqlite");
 
-            using (var db = new SQLiteConnection(new SQLitePlatformWin32(), d.FileName))
+            Database.Lesson correctLesson;
+            using (var db = new SQLiteConnection(new SQLitePlatformWin32(), Database.FileName))
             {
                 var correctUser = new Database.User { Name = "testuser"};
                 db.Insert(correctUser);
 
-                var correctLesson = new Database.Lesson { Name = "testlesson", UserId = correctUser.Id };
+                correctLesson = new Database.Lesson { Name = "testlesson", UserId = correctUser.Id };
                 db.Insert(correctLesson);
 
                 var correctWord = new Database.Word { DefinitionLang1 = "kot", DefinitionLang2 = "a cat", LessonId = correctLesson.Id };
                 db.Insert(correctWord);
+                db.Insert(new Database.Word { DefinitionLang1 = "wąż", DefinitionLang2 = "a snake", LessonId = correctLesson.Id });
 
                 try
                 {
@@ -153,7 +145,7 @@ namespace LangSharperTests
                 }
                 catch (SQLiteException e)
                 {
-                   StringAssert.Contains(e.Message, "Constraint"); 
+                    StringAssert.Contains(e.Message, "Constraint"); 
                 }
 
                 try
@@ -174,8 +166,10 @@ namespace LangSharperTests
                 {
                 }
 
-                Assert.AreEqual(1, db.Table<Database.Word>().Count());
+                db.Insert(new Database.Word { DefinitionLang1 = "pies", DefinitionLang2 = "a dog", LessonId = correctLesson.Id+1 });
+                Assert.AreEqual(3, db.Table<Database.Word>().Count());
             }
+            Assert.AreEqual(2, correctLesson.WordCount);
         }
 
         [TestMethod]
@@ -186,7 +180,7 @@ namespace LangSharperTests
             File.Delete(Globals.Path + "testdatabase.sqlite");
             Database d = new Database(Globals.AppName, Globals.Path + "testdatabase.sqlite");
 
-            using (var db = new SQLiteConnection(new SQLitePlatformWin32(), d.FileName))
+            using (var db = new SQLiteConnection(new SQLitePlatformWin32(), Database.FileName))
             {
                 var correctUser = new Database.User { Name = "testuser"};
                 db.Insert(correctUser);

@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using LangSharper;
 using LangSharper.Resources;
 using LangSharper.ViewModels;
@@ -70,7 +68,6 @@ namespace LangSharperTests
             var vm = new CreateModifyLessonsViewModel();
             vm.OnViewActivate();
             Assert.AreEqual(1, vm.ExtendedWords.Count);
-            Assert.IsTrue(vm.ExtendedWords[0].IsNew);
 
             var newLesson = new Database.Lesson()
             {
@@ -127,7 +124,17 @@ namespace LangSharperTests
             Assert.IsTrue(vm.ChangeLessonNameCmd.CanExecute(0));
             vm.PropertyChanged += del;
             vm.ChangeLessonNameCmd.Execute(0);
+            Assert.AreEqual(1, vm.ExtendedWords.Count);
+            Assert.IsTrue(vm.ExtendedWords[0].IsNew);
 
+            TableQuery<Database.Lesson> lessons;
+            using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString()))
+            {
+                lessons = db.Table<Database.Lesson>();
+                Assert.AreEqual(1, lessons.Count());
+                Assert.AreEqual((PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Id, lessons.ElementAt(0).UserId);
+                Assert.AreEqual(vm.NewName, lessons.ElementAt(0).Name);
+            }
             Assert.IsTrue(Directory.Exists(Path.Combine(Globals.ResourcePath, 
                                                         (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name, vm.NewName)));
             StringAssert.Contains(vm.Lesson.Name, vm.NewName);
@@ -142,11 +149,12 @@ namespace LangSharperTests
             vm.OnViewActivate();
             Assert.IsFalse(vm.ChangeLessonNameCmd.CanExecute(0));
 
-            BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson.Name = vm.NewName;
+            BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson.Name = "testname";
             vm.OnViewActivate();
 
             var oldName = "testlesson";
             vm.NewName = "testlesson2";
+
             Assert.IsTrue(vm.ChangeLessonNameCmd.CanExecute(0));
             vm.ChangeLessonNameCmd.Execute(0);
             Assert.IsTrue(Directory.Exists(Path.Combine(Globals.ResourcePath,
@@ -163,7 +171,7 @@ namespace LangSharperTests
             vm.OnViewActivate();
             using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString()))
             {
-                db.Insert(new Database.Lesson() { Name = "lessontestname", UserId = (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Id });
+                db.Insert(new Database.Lesson { Name = "lessontestname", UserId = (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Id });
             }
 
             vm.NewName = "lessontestname";
@@ -171,10 +179,10 @@ namespace LangSharperTests
             vm.ChangeLessonNameCmd.Execute(0);
             Assert.IsTrue(vm.IsErrorVisible);
             StringAssert.Contains(vm.ErrorMessage, vm.Texts.Dict["ExLessonNameDuplicate"]);
-
-            vm.OnViewActivate();
+            vm.HideError.Execute(0);
 
             (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Id = 6;
+            vm.OnViewActivate();
             vm.NewName = "lessontestname";
             Assert.IsTrue(vm.ChangeLessonNameCmd.CanExecute(0));
             vm.ChangeLessonNameCmd.Execute(0);
@@ -394,26 +402,47 @@ namespace LangSharperTests
         public void ConfirmChangesTest()
         {
             var vm = PrepareVm();
-            
+            //
+            // not enough words
+            //
             vm.ExtendedWords[0].DefinitionLang1 = "def1";
             vm.ExtendedWords[0].DefinitionLang2 = "def2";
             vm.ConfirmChangesCmd.Execute(0);
+            Assert.IsTrue(vm.IsErrorVisible);
+            Assert.AreEqual(string.Format(vm.Texts.Dict["ExNotEnoughWords"], Globals.MinWordsForLesson), vm.ErrorMessage);
+            vm.HideError.Execute(0);
+
+            //
+            // enough words
+            //
+            vm.AddWordItemCmd.Execute(0);
+            vm.AddWordItemCmd.Execute(0);
+            vm.AddWordItemCmd.Execute(0);
+            vm.AddWordItemCmd.Execute(0);
+            vm.ExtendedWords[1].DefinitionLang1 = "def3";
+            vm.ExtendedWords[1].DefinitionLang2 = "def4";
+            vm.ExtendedWords[2].DefinitionLang1 = "def5";
+            vm.ExtendedWords[2].DefinitionLang2 = "def6";
+            vm.ExtendedWords[3].DefinitionLang1 = "def7";
+            vm.ExtendedWords[3].DefinitionLang2 = "def8";
+            vm.ExtendedWords[4].DefinitionLang1 = "def9";
+            vm.ExtendedWords[4].DefinitionLang2 = "def10";
+            vm.ConfirmChangesCmd.Execute(0);
             Assert.IsFalse(vm.IsErrorVisible);
+
             vm.ConfirmChangesCmd.Execute(0);
             Assert.IsTrue(vm.IsErrorVisible);
             Assert.AreEqual(vm.Texts.Dict["ExNoChangesToConfirm"], vm.ErrorMessage);
             vm.HideError.Execute(0);
-            int id1 = vm.ExtendedWords[0].Id;
 
             //
             // adding new word
             //
             vm.AddWordItemCmd.Execute(0);
-            vm.ExtendedWords[1].DefinitionLang1 = "ddef1";
-            vm.ExtendedWords[1].DefinitionLang2 = "ddef2";
+            vm.ExtendedWords[5].DefinitionLang1 = "ddef1";
+            vm.ExtendedWords[5].DefinitionLang2 = "ddef2";
             vm.ConfirmChangesCmd.Execute(0);
             Assert.IsFalse(vm.IsErrorVisible);
-            int id2 = vm.ExtendedWords[1].Id;
 
             //
             // view change
@@ -421,9 +450,7 @@ namespace LangSharperTests
             vm.PreviousCmd.Execute(0);
             BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson = vm.Lesson;
             PropertyFinder.Instance.CurrentModel = vm;
-            Assert.AreEqual(2, vm.ExtendedWords.Count);
-            Assert.AreEqual(id1, vm.ExtendedWords[0].Id);
-            Assert.AreEqual(id2, vm.ExtendedWords[1].Id);
+            Assert.AreEqual(6, vm.ExtendedWords.Count);
 
             //
             // drop image

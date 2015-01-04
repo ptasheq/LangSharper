@@ -6,7 +6,7 @@ using LangSharper.Annotations;
 
 namespace LangSharper.ViewModels
 {
-    public class BaseViewModel: INotifyPropertyChanged
+    public abstract class BaseViewModel: INotifyPropertyChanged
     {
         static readonly Dictionary<Type, BaseViewModel> _viewModelsDict = new Dictionary<Type, BaseViewModel>()
         {
@@ -36,9 +36,9 @@ namespace LangSharper.ViewModels
 
         public AppCommand HideError { get; protected set; }
             
-        protected void ShowError(string key)
+        protected void ShowError(string key, params object[] args)
         {
-            ErrorMessage = Texts.Dict[key];
+            ErrorMessage = (args.Length > 0) ? string.Format(Texts.Dict[key], args) : Texts.Dict[key];
             IsErrorVisible = true;
             OnPropertyChanged("ErrorMessage");
             OnPropertyChanged("IsErrorVisible");

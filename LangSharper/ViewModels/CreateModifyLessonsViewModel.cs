@@ -43,8 +43,7 @@ namespace LangSharper.ViewModels
             {
                 Lesson = new Database.Lesson { Name = null, UserId = (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Id };
                 IsChangeNameVisible = true;
-                ExtendedWords = new ObservableCollection<ExtendedWord>(); 
-                AddWordItem();
+                ExtendedWords = new ObservableCollection<ExtendedWord> { new ExtendedWord() }; 
             }
             else
             {
@@ -67,6 +66,12 @@ namespace LangSharper.ViewModels
             if (_areChangesSaved)
             {
                 ShowError("ExNoChangesToConfirm");
+                return;
+            }
+
+            if (ExtendedWords.Count < Globals.MinWordsForLesson)
+            {
+                ShowError("ExNotEnoughWords", Globals.MinWordsForLesson);
                 return;
             }
 
@@ -142,30 +147,35 @@ namespace LangSharper.ViewModels
 
         void ChangeLessonName()
         {
-            using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString())) 
+            var user = PropertyFinder.Instance.Resource["CurrentUser"] as Database.User;
+            using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString()))
             {
-                if (db.Table<Database.Lesson>().Any(l => l.Name == NewName 
-                    && l.UserId == (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Id))
+                if (db.Table<Database.Lesson>().Any(l => l.Name == NewName && l.UserId == user.Id))
                 {
                     ShowError("ExLessonNameDuplicate");
                     return;
                 }
-            }
-            if (Lesson.Name != null)
-            {
-                if (Lesson.Name == NewName)
+                if (Lesson.Name != null)
                 {
-                    IsChangeNameVisible = false;
-                    OnPropertyChanged("IsChangeNameVisible");
+                    if (Lesson.Name == NewName)
+                    {
+                        IsChangeNameVisible = false;
+                        OnPropertyChanged("IsChangeNameVisible");
+                    }
+                    Directory.Move(Path.Combine(Globals.ResourcePath, user.Name, Lesson.Name),
+                                   Path.Combine(Globals.ResourcePath, user.Name, NewName));
+                    Lesson.Name = NewName;
+                    db.InsertOrReplace(Lesson);
                 }
-                Directory.Move(Path.Combine(Globals.ResourcePath, (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name, Lesson.Name), 
-                               Path.Combine(Globals.ResourcePath, (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name, NewName));
+                else
+                {
+                    Directory.CreateDirectory(Path.Combine(Globals.ResourcePath, user.Name, NewName));
+                    Lesson.Name = NewName;
+                    db.Insert(Lesson);
+                    ExtendedWords.RemoveAt(0);
+                    AddWordItem();
+                }
             }
-            else
-            {
-                Directory.CreateDirectory(Path.Combine(Globals.ResourcePath, (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name, NewName));
-            }
-            Lesson.Name = NewName;
             OnPropertyChanged("Lesson");
             IsChangeNameVisible = false;
             OnPropertyChanged("IsChangeNameVisible");

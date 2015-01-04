@@ -9,7 +9,7 @@ namespace LangSharper
     public sealed class Database
     {
         private static string _appName;
-        public string FileName { get; private set; }
+        public static string FileName { get; private set; }
         const int UserNameMinLength = 3;
 
         public class User
@@ -34,20 +34,31 @@ namespace LangSharper
 
         public class Lesson
         {
-
             int? _userId = null;
 
             [PrimaryKey, AutoIncrement]
             public int Id { get; set; }
 
-            [Unique, MaxLength(40)]
+            [Indexed(Name = "LessonIndex", Order = 1, Unique = true), MaxLength(40)]
             public string Name { get; set; }
 
-            [NotNull]
+            [Indexed(Name = "LessonIndex", Order = 1, Unique = true), NotNull]
             public int? UserId
             {
                 get { return _userId; }
                 set { _userId = value; }
+            }
+            
+            [Ignore]
+            public int WordCount
+            {
+                get
+                {
+                    using (var db = new SQLiteConnection(new SQLitePlatformWin32(), FileName))
+                    {
+                        return db.Table<Word>().Count(w => w.LessonId == Id);
+                    }
+                }
             }
         }
 
