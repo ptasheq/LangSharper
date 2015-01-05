@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -34,13 +35,19 @@ namespace LangSharper
 
         public ViewModels.BaseViewModel CurrentModel
         {
-            get { return _dict["ViewModel"] as ViewModels.BaseViewModel; }
+            get { return (_dict["ViewModelStack"] as Stack<ViewModels.BaseViewModel>).Peek(); }
             set
             {
-                _dict["ViewModel"] = value;
+                (_dict["ViewModelStack"] as Stack<ViewModels.BaseViewModel>).Push(value);
                 value.OnViewActivate();
                 OnPropertyChanged();
             }
+        }
+
+        public void ReturnToPreviousModel()
+        {
+            (_dict["ViewModelStack"] as Stack<ViewModels.BaseViewModel>).Pop().OnViewActivate();
+            OnPropertyChanged("CurrentModel");
         }
 
         static public void CreateInstance(IDictionary dict)

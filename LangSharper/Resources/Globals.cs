@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace LangSharper
@@ -12,12 +13,26 @@ namespace LangSharper
         public static readonly string ResourcePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), AppName);
         public const int MinWordsForLesson = 5;
         public const int MaxWordsForLesson = 30;
+        public const int WordsToChooseCount = 4;
+        public readonly static Random Random = new Random();
 
         public static void DeleteDirIfExists(string path, bool recursive)
         {
             if (Directory.Exists(path))
             {
                 Directory.Delete(path, recursive);
+            }
+        }
+
+        public static void Shuffle<T>(List<T> array)
+        {
+            int len = array.Count;
+            for (int i = 0; i < len; ++i)
+            {
+                int randomIndex = i + (int) (Random.NextDouble() * (len - i));
+                T tmp = array[i];
+                array[i] = array[randomIndex];
+                array[randomIndex] = tmp;
             }
         }
     }

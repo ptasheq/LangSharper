@@ -76,6 +76,7 @@
     <Compile Include="ManageLessonsViewModelTest.cs" />
     <Compile Include="CreateModifyLessonsViewModelTest.cs" />
     <Compile Include="SimpleLearningViewModelTest.cs" />
+    <Compile Include="BaseLessonListViewModelTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LangSharper\LangSharper.csproj">

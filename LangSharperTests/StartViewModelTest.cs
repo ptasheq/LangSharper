@@ -21,7 +21,8 @@ namespace LangSharperTests
             PropertyFinder.CreateInstance(new Dictionary<string, object>
             {
                 { "UiTexts", uiTexts }, 
-                { "DatabasePath", Globals.Path + "testdatabase.sqlite" }
+                { "DatabasePath", Globals.Path + "testdatabase.sqlite" },
+                { "ViewModelStack", new Stack<BaseViewModel>() }
             });
             Database d = new Database(Globals.AppName, PropertyFinder.Instance.Resource["DatabasePath"].ToString());
 

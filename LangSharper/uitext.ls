@@ -32,6 +32,8 @@ BtnConfirmChanges:Zatwierdź zmiany w lekcji
 
 TbMainLearning:Nauka
 TbMainSimpleLearning:Tryb prosty
+BtnStartLesson:Rozpocznij lekcję
+BtnStopLesson:Zakończ lekcję
 
 TbMainWriteLearning:Tryb wpisywania
 
@@ -53,5 +55,5 @@ ExWrongItemDropped:Przeciągnięty element nie jest plikiem graficznym!
 ExNotEnoughWords:Podano za mało słów. Minimalna ich liczba w lekcji to {0}
 ExWordNumberLimitReached:Osiągnięto dopuszczalny limit słów w lekcji!
 ExNoChangesToConfirm:Nie ma żadnych zmian do potwierdzenia!
-ExNoLessonChosen:Nie wybrano żadnej lekcji do edycji!
+ExNoLessonChosen:Nie dokonano wyboru lekcji!
 ExUnknownError:Wystąpił nieznany błąd. Proszę spróbować ponownie wykonać poprzednią akcję.

@@ -4,12 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:userControls="clr-namespace:LangSharper.UserControls"
+             xmlns:langSharper="clr-namespace:LangSharper"
              mc:Ignorable="d">
     <UserControl.Resources>
         <Style TargetType="StackPanel" x:Key="spButtons">
             <Setter Property="Margin" Value="0,15,0,0"></Setter>
             <Setter Property="MaxWidth" Value="250"></Setter>
         </Style>
+
+        <BooleanToVisibilityConverter x:Key="boolToVisibility"/>
+        <langSharper:EmptyStringToVisibilityConverter x:Key="emptyStringToVisibility" />
+        <langSharper:InverseBooleanToVisibilityConverter x:Key="invBoolToVisibility"/>
     </UserControl.Resources>
 
     <DockPanel Name="dp">
@@ -22,19 +27,42 @@
                 <RotateTransform Angle="-90"></RotateTransform>
             </Button.LayoutTransform>
         </Button>
-        <StackPanel DockPanel.Dock="Right">
-            <TextBlock Margin="0" Text="{Binding Texts.Dict[TbMainLearning]}" Style="{DynamicResource tbMain}"></TextBlock>
-            <TextBlock Text="{Binding Texts.Dict[TbMainSimpleLearning]}" Style="{DynamicResource tbMainSub}"></TextBlock>
+        <Grid DockPanel.Dock="Right">
+            <StackPanel>
+                <TextBlock Margin="0" Text="{Binding Texts.Dict[TbMainLearning]}" Style="{DynamicResource tbMain}"></TextBlock>
+                <TextBlock Text="{Binding Texts.Dict[TbMainSimpleLearning]}" Style="{DynamicResource tbMainSub}"></TextBlock>
 
-            <DataGrid CanUserAddRows="False" ItemsSource="{Binding Lessons}" AutoGenerateColumns="False" ColumnWidth="*" SelectedItem="{Binding SelectedLesson}">
-                <DataGrid.Columns>
-                    <StaticResource ResourceKey="column1"></StaticResource>
-                    <StaticResource ResourceKey="column2"></StaticResource>
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
-        <StackPanel Style="{StaticResource spButtons}">
-            <Button Content="{Binding Texts.Dict[BtnCreateNewLesson]}" Command="{Binding CreateNewLessonCmd}"></Button>
-        </StackPanel>
+                <DataGrid CanUserAddRows="False" ItemsSource="{Binding Lessons}" AutoGenerateColumns="False" ColumnWidth="*" SelectedItem="{Binding SelectedLesson}" 
+                          Visibility="{Binding LessonStarted, Converter={StaticResource invBoolToVisibility}}">
+                    <DataGrid.Columns>
+                        <StaticResource ResourceKey="column1"></StaticResource>
+                        <StaticResource ResourceKey="column2"></StaticResource>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <ListView ItemsSource="{Binding WordsToChoose}" Visibility="{Binding LessonStarted, Converter={StaticResource boolToVisibility}}" HorizontalContentAlignment="Stretch">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, 
+                                    Path=DataContext.ChooseAnswerCmd}" CommandParameter="{Binding}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding DefinitionLang1}"></TextBlock>
+                                <TextBlock Grid.Column="1" Text="{Binding DefinitionLang2}"></TextBlock>
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                
+                <StackPanel Style="{StaticResource spButtons}">
+                    <Button Content="{Binding Texts.Dict[BtnStartLesson]}" Command="{Binding ChangeLearningStateCmd}" Visibility="{Binding LessonStarted, Converter={StaticResource invBoolToVisibility}}"></Button>
+                    <Button Content="{Binding Texts.Dict[BtnStopLesson]}" Command="{Binding ChangeLearningStateCmd}" Visibility="{Binding LessonStarted, Converter={StaticResource boolToVisibility}}"></Button>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
     </DockPanel>
 </UserControl>

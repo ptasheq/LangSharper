@@ -64,6 +64,7 @@ namespace LangSharper.Resources
         }
 
         public bool IsNew { get; set; }
+        public bool CorrectlyAnswered { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

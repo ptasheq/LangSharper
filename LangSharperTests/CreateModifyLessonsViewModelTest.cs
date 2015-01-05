@@ -26,7 +26,8 @@ namespace LangSharperTests
             {
                 { "UiTexts", uiTexts }, 
                 { "DatabasePath", Globals.Path + "testdatabase.sqlite" },
-                { "CurrentUser", new Database.User { Id = 0, Name = "testuser"}}
+                { "CurrentUser", new Database.User { Id = 0, Name = "testuser"}},
+                { "ViewModelStack", new Stack<BaseViewModel>() }
             });
             var d = new Database(Globals.AppName, PropertyFinder.Instance.Resource["DatabasePath"].ToString());
         }
@@ -92,16 +93,6 @@ namespace LangSharperTests
                 Assert.AreEqual(newLesson.Id, w.LessonId);
                 Assert.IsFalse(w.IsNew);
             }
-        }
-
-        [TestMethod]
-        public void PreviousCmdTest()
-        {
-            var vm = new CreateModifyLessonsViewModel();
-            vm.OnViewActivate();
-            Assert.IsTrue(vm.PreviousCmd.CanExecute(0));
-            vm.PreviousCmd.Execute(0);
-            Assert.IsInstanceOfType(PropertyFinder.Instance.CurrentModel, typeof (ManageLessonsViewModel));
         }
 
         [TestMethod]
@@ -447,7 +438,7 @@ namespace LangSharperTests
             //
             // view change
             //
-            vm.PreviousCmd.Execute(0);
+            BaseViewModel.GetViewModel<ManageLessonsViewModel>().OnViewActivate();
             BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson = vm.Lesson;
             PropertyFinder.Instance.CurrentModel = vm;
             Assert.AreEqual(6, vm.ExtendedWords.Count);

@@ -22,7 +22,8 @@ namespace LangSharperTests
             {
                 { "UiTexts", uiTexts }, 
                 { "DatabasePath", Globals.Path + "testdatabase.sqlite" },
-                { "CurrentUser", new Database.User { Id = 1, Name = "testuser" }}
+                { "CurrentUser", new Database.User { Id = 1, Name = "testuser" }},
+                { "ViewModelStack", new Stack<BaseViewModel>() }
             });
             var d = new Database(Globals.AppName, PropertyFinder.Instance.Resource["DatabasePath"].ToString());
         }
@@ -33,24 +34,6 @@ namespace LangSharperTests
             BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson = null;
             Globals.DeleteDirIfExists(Path.Combine(Globals.ResourcePath,
                                       (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name), true);
-        }
-
-
-        [TestMethod]
-        public void ContructorAndOnViewActivateTest()
-        {
-            int userId = (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Id;
-            using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString()))
-            {
-                db.Insert(new Database.Lesson { Name = "testlesson1", UserId = userId });
-                db.Insert(new Database.Lesson { Name = "testlesson2", UserId = userId });
-                db.Insert(new Database.Lesson { Name = "testlesson3", UserId = userId });
-                db.Insert(new Database.Lesson { Name = "testlesson4", UserId = userId });
-                db.Insert(new Database.Lesson { Name = "testlesson5", UserId = userId+1 });
-            }
-            var vm = new ManageLessonsViewModel();
-            vm.OnViewActivate();
-            Assert.AreEqual(4, vm.Lessons.Count);
         }
 
         Database.Lesson PrepareModifyingTests()
@@ -126,15 +109,6 @@ namespace LangSharperTests
             Assert.IsTrue(vm.EditChosenLessonCmd.CanExecute(0));
             vm.EditChosenLessonCmd.Execute(0);
             Assert.AreSame(vm.SelectedLesson, BaseViewModel.GetViewModel<CreateModifyLessonsViewModel>().Lesson);
-        }
-
-        [TestMethod]
-        public void PreviousCmdTest()
-        {
-            var vm = new ManageLessonsViewModel();
-            Assert.IsTrue(vm.PreviousCmd.CanExecute(0));
-            vm.PreviousCmd.Execute(0);
-            Assert.IsInstanceOfType(PropertyFinder.Instance.CurrentModel, typeof(MainMenuViewModel));
         }
     }
 }

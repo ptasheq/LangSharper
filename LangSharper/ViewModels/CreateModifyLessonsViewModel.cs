@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -19,7 +18,6 @@ namespace LangSharper.ViewModels
 
         public CreateModifyLessonsViewModel()
         {
-            PreviousCmd = new AppCommand(() => { PropertyFinder.Instance.CurrentModel = GetViewModel<ManageLessonsViewModel>(); });
             ChangeLessonNameCmd = new AppCommand(ChangeLessonName, () => !string.IsNullOrEmpty(NewName));
             ShowChangeLessonNameSectionCmd = new AppCommand(ShowChangeLessonSectionName, () => IsChangeNameVisible.Equals(false));
             DropImageCmd = new AppCommand(DropImage);
@@ -28,7 +26,6 @@ namespace LangSharper.ViewModels
             ConfirmChangesCmd = new AppCommand(ConfirmChanges);
         }
 
-        public AppCommand PreviousCmd { get; private set; }
         public AppCommand ChangeLessonNameCmd { get; private set; }
         public AppCommand ShowChangeLessonNameSectionCmd { get; private set; }
         public AppCommand DropImageCmd { get; private set; }

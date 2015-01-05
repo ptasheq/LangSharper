@@ -28,6 +28,7 @@ namespace LangSharper.ViewModels
         {
             IsErrorVisible = false;
             HideError = new AppCommand(() => { IsErrorVisible = false; OnPropertyChanged("IsErrorVisible"); });
+            PreviousCmd = new AppCommand(() => PropertyFinder.Instance.ReturnToPreviousModel());
         }
 
         public UiTexts Texts { get { return PropertyFinder.Instance.GetResource("UiTexts") as UiTexts;} } 
@@ -35,6 +36,7 @@ namespace LangSharper.ViewModels
         public bool IsErrorVisible { get; protected set; }
 
         public AppCommand HideError { get; protected set; }
+        public AppCommand PreviousCmd { get; protected set; }
             
         protected void ShowError(string key, params object[] args)
         {

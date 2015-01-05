@@ -88,6 +88,7 @@
     <Compile Include="UserControls\ErrorControl.xaml.cs">
       <DependentUpon>ErrorControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\BaseLessonListViewModel.cs" />
     <Compile Include="ViewModels\CreateModifyLessonsViewModel.cs" />
     <Compile Include="ViewModels\MainMenuViewModel.cs" />
     <Compile Include="ViewModels\ManageLessonsViewModel.cs" />

@@ -22,7 +22,8 @@ namespace LangSharperTests
             {
                 { "UiTexts", uiTexts }, 
                 { "DatabasePath", Globals.Path + "testdatabase.sqlite" },
-                { "CurrentUser", new Database.User { Name = "testuser"}}
+                { "CurrentUser", new Database.User { Name = "testuser"}},
+                { "ViewModelStack", new Stack<BaseViewModel>() } 
             });
             var d = new Database(Globals.AppName, PropertyFinder.Instance.Resource["DatabasePath"].ToString());
             path = Path.Combine(Globals.ResourcePath, (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name); 
@@ -40,19 +41,22 @@ namespace LangSharperTests
         public void ChangeViewCmdsTest()
         {
             var vm = new MainMenuViewModel();
+            PropertyFinder.Instance.CurrentModel = new StartViewModel();
+            PropertyFinder.Instance.CurrentModel = vm;
             var dict = new Dictionary<AppCommand, Type>
             {
                 {vm.ManageLessonsCmd, typeof (ManageLessonsViewModel)},
                 {vm.SimpleLearningCmd, typeof (SimpleLearningViewModel)},
                 {vm.WriteLearningCmd, typeof (WriteLearningViewModel)},
                 {vm.StatisticsCmd, typeof (StatisticsViewModel)},
-                {vm.ReturnToLoginCmd, typeof (StartViewModel)}
+                {vm.PreviousCmd, typeof (StartViewModel)}
             };
             foreach (var pair in dict)
             {
                 Assert.IsTrue(pair.Key.CanExecute(0));
                 pair.Key.Execute(0);
                 Assert.IsInstanceOfType(PropertyFinder.Instance.CurrentModel, pair.Value);
+                PropertyFinder.Instance.ReturnToPreviousModel();
             }
         }
 

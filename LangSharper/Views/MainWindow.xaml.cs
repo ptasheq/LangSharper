@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using LangSharper.ViewModels;
 
 namespace LangSharper
@@ -10,7 +11,7 @@ namespace LangSharper
     {
         public MainWindow()
         {
-            Application.Current.Properties["ViewModel"] = BaseViewModel.GetViewModel<StartViewModel>();
+            PropertyFinder.Instance.CurrentModel = BaseViewModel.GetViewModel<StartViewModel>();
             DataContext = BaseViewModel.GetViewModel<StartViewModel>();
             InitializeComponent();
         }
