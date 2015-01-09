@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using LangSharper.Views;
 
 namespace LangSharper
 {
@@ -34,6 +35,13 @@ namespace LangSharper
                 array[i] = array[randomIndex];
                 array[randomIndex] = tmp;
             }
+        }
+
+        public static void Swap<T>(IList<T> list, int a, int b)
+        {
+            T tmp = list[a];
+            list[a] = list[b];
+            list[b] = tmp;
         }
     }
 }

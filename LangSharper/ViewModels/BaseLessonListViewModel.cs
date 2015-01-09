@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using SQLite.Net;
 using SQLite.Net.Platform.Win32;
 
@@ -8,7 +9,7 @@ namespace LangSharper.ViewModels
     {
         public override void OnViewActivate()
         {
-            SelectedLesson = null;
+            Lesson = null;
             var userId = (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Id;
             using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString()))
             {
@@ -16,7 +17,7 @@ namespace LangSharper.ViewModels
             }
         }
 
-        public Database.Lesson SelectedLesson { get; set; }
+        public Database.Lesson Lesson { get; set; }
         public ObservableCollection<Database.Lesson> Lessons { get; protected set; }
     }
 }

@@ -10,10 +10,6 @@
             <Setter Property="Margin" Value="0,0,0,10"></Setter>
             <Setter Property="Padding" Value="0,5,0,5"></Setter>
         </Style>
-        <Style TargetType="Button" x:Key="btnPrevious">
-            <Setter Property="Margin" Value="0"></Setter>
-            <Setter Property="HorizontalAlignment" Value="Left"></Setter>
-        </Style>
         <Style TargetType="StackPanel" x:Key="spButtons">
             <Setter Property="Margin" Value="0,15,0,0"></Setter>
             <Setter Property="MaxWidth" Value="250"></Setter>
@@ -33,7 +29,7 @@
         <StackPanel DockPanel.Dock="Right">
             <TextBlock Margin="0" Text="{Binding Texts.Dict[TbMainManageLessons]}" Style="{DynamicResource tbMain}"></TextBlock>
             <TextBlock Text="{Binding Texts.Dict[TbSubManageLessons]}" Style="{DynamicResource tbMainSub}"></TextBlock>
-            <DataGrid CanUserAddRows="False" ItemsSource="{Binding Lessons}" AutoGenerateColumns="False" ColumnWidth="*" SelectedItem="{Binding SelectedLesson}">
+            <DataGrid CanUserAddRows="False" ItemsSource="{Binding Lessons}" AutoGenerateColumns="False" ColumnWidth="*" SelectedItem="{Binding Lesson}">
                 <DataGrid.Columns>
                     <StaticResource ResourceKey="column1"></StaticResource>
                     <StaticResource ResourceKey="column2"></StaticResource>

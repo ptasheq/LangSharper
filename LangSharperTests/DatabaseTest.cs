@@ -239,10 +239,11 @@ namespace LangSharperTests
                 { "DatabasePath", Globals.Path + "testdatabase.sqlite" },
                 { "CurrentUser", new Database.User { Name = "testuser"} }
             });
+            Database d = new Database(Globals.AppName, Globals.Path + "testdatabase.sqlite");
             var word = new Database.Word { DefinitionLang1 = "kot", DefinitionLang2 = "a cat", LessonId = 1, HasImage = true };
             string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                                        Globals.AppName, (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name,
-                                       "testlesson", word.DefinitionLang1 + "_" + word.DefinitionLang2 + ".png");
+                                       "testlesson", word.DefinitionLang1.Replace(" ", "_") + "_" + word.DefinitionLang2.Replace(" ", "_") + ".png");
 
             try
             {

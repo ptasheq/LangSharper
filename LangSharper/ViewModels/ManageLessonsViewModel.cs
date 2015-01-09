@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Windows;
-using SQLite.Net;
+﻿using SQLite.Net;
 using SQLite.Net.Platform.Win32;
 
 namespace LangSharper.ViewModels
@@ -11,7 +7,7 @@ namespace LangSharper.ViewModels
     {
         public ManageLessonsViewModel()
         {
-            SelectedLesson = null;
+            Lesson = null;
             CreateNewLessonCmd = new AppCommand(CreateNewLesson);
             DeleteChosenLessonCmd = new AppCommand(DeleteChosenLesson);
             EditChosenLessonCmd = new AppCommand(EditChosenLesson);
@@ -23,28 +19,28 @@ namespace LangSharper.ViewModels
 
         public void CreateNewLesson()
         {
-            SelectedLesson = null;
+            Lesson = null;
             PropertyFinder.Instance.CurrentModel = GetViewModel<CreateModifyLessonsViewModel>();
         }
 
         public void DeleteChosenLesson()
         {
-            if (SelectedLesson == null)
+            if (Lesson == null)
             {
                 ShowError("ExNoLessonChosen");
                 return;
             }
             using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString()))
             {
-                db.Delete(SelectedLesson);
+                db.Delete(Lesson);
             }
-            Lessons.Remove(SelectedLesson);
-            SelectedLesson = null;
+            Lessons.Remove(Lesson);
+            Lesson = null;
         }
 
         public void EditChosenLesson()
         {
-            if (SelectedLesson == null)
+            if (Lesson == null)
             {
                 ShowError("ExNoLessonChosen");
                 return;

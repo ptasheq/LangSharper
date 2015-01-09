@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:userControls="clr-namespace:LangSharper.UserControls"
-             xmlns:langSharper="clr-namespace:LangSharper"
+             xmlns:resources="clr-namespace:LangSharper.Resources"
              mc:Ignorable="d">
     <UserControl.Resources>
         <Style TargetType="StackPanel" x:Key="spButtons">
@@ -12,9 +11,14 @@
             <Setter Property="MaxWidth" Value="250"></Setter>
         </Style>
 
+        <Style TargetType="Button" x:Key="btnPrevious">
+            <Setter Property="Margin" Value="0"></Setter>
+            <Setter Property="Padding" Value="0,5,0,5"></Setter>
+        </Style>
+
         <BooleanToVisibilityConverter x:Key="boolToVisibility"/>
-        <langSharper:EmptyStringToVisibilityConverter x:Key="emptyStringToVisibility" />
-        <langSharper:InverseBooleanToVisibilityConverter x:Key="invBoolToVisibility"/>
+        <resources:InverseBooleanToVisibilityConverter x:Key="invBoolToVisibility"/>
+        <resources:IntToColorConverter x:Key="intToColor"/>
     </UserControl.Resources>
 
     <DockPanel Name="dp">
@@ -22,7 +26,7 @@
             <DataGridTextColumn x:Key="column1" Header="{Binding Source={x:Reference dp}, Path=DataContext.Texts.Dict[DgcLessonName]}" Binding="{Binding Name}"></DataGridTextColumn>
             <DataGridTextColumn x:Key="column2" Header="{Binding Source={x:Reference dp}, Path=DataContext.Texts.Dict[DgcWordCount]}" Binding="{Binding WordCount}"></DataGridTextColumn>
         </DockPanel.Resources>
-        <Button Margin="0"  DockPanel.Dock="Left" Content="{Binding Texts.Dict[BtnPrevious]}" Command="{Binding PreviousCmd}">
+        <Button Style="{StaticResource btnPrevious}" Visibility="{Binding LessonStarted, Converter={StaticResource invBoolToVisibility}}"  DockPanel.Dock="Left" Content="{Binding Texts.Dict[BtnPrevious]}" Command="{Binding PreviousCmd}">
             <Button.LayoutTransform>
                 <RotateTransform Angle="-90"></RotateTransform>
             </Button.LayoutTransform>
@@ -32,7 +36,7 @@
                 <TextBlock Margin="0" Text="{Binding Texts.Dict[TbMainLearning]}" Style="{DynamicResource tbMain}"></TextBlock>
                 <TextBlock Text="{Binding Texts.Dict[TbMainSimpleLearning]}" Style="{DynamicResource tbMainSub}"></TextBlock>
 
-                <DataGrid CanUserAddRows="False" ItemsSource="{Binding Lessons}" AutoGenerateColumns="False" ColumnWidth="*" SelectedItem="{Binding SelectedLesson}" 
+                <DataGrid CanUserAddRows="False" ItemsSource="{Binding Lessons}" AutoGenerateColumns="False" ColumnWidth="*" SelectedItem="{Binding Lesson}" 
                           Visibility="{Binding LessonStarted, Converter={StaticResource invBoolToVisibility}}">
                     <DataGrid.Columns>
                         <StaticResource ResourceKey="column1"></StaticResource>
@@ -40,27 +44,45 @@
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <ListView ItemsSource="{Binding WordsToChoose}" Visibility="{Binding LessonStarted, Converter={StaticResource boolToVisibility}}" HorizontalContentAlignment="Stretch">
+                <WrapPanel HorizontalAlignment="Center" Visibility="{Binding LessonStarted, Converter={StaticResource boolToVisibility}}">
+                    <TextBlock Text="{Binding Texts.Dict[TbWhatDoesItMean]}"></TextBlock>
+                    <TextBlock FontWeight="Bold" Text="{Binding WordToTranslate.DefinitionLang1}"></TextBlock>
+                </WrapPanel>
+               
+
+                <ListView ItemsSource="{Binding WordsToChoose}" Visibility="{Binding LessonStarted, Converter={StaticResource boolToVisibility}}" 
+                          HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,5,0,5">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid MaxWidth="380" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, 
-                                    Path=DataContext.ChooseAnswerCmd}" CommandParameter="{Binding}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding DefinitionLang1}"></TextBlock>
-                                <TextBlock Grid.Column="1" Text="{Binding DefinitionLang2}"></TextBlock>
-                                </Grid>
-                            </Button>
+                            <Border BorderThickness="2" BorderBrush="{Binding CorrectlyAnswered, Converter={StaticResource intToColor}}">
+                                <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.ChooseAnswerCmd}"
+                                        CommandParameter="{Binding}">
+                                    <StackPanel>
+                                        <Image MaxHeight="75" Stretch="UniformToFill" Visibility="{Binding HasImage, Converter={StaticResource boolToVisibility}}" Source="{Binding ImagePath}" />
+                                        <TextBlock HorizontalAlignment="Center" Text="{Binding DefinitionLang2}"></TextBlock>
+                                    </StackPanel>
+                                </Button>
+                            </Border>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+
+                <WrapPanel HorizontalAlignment="Center" Visibility="{Binding LessonStarted, Converter={StaticResource boolToVisibility}}">
+                    <TextBlock Text="{Binding Texts.Dict[TbWordsRemaining]}"></TextBlock>
+                    <TextBlock Text="{Binding WordsRemaining}"></TextBlock>
+                    <TextBlock Text="{Binding Texts.Dict[TbWordsRemaining2]}"></TextBlock>
+                </WrapPanel> 
                 
                 <StackPanel Style="{StaticResource spButtons}">
+                    <ComboBox Margin="0,0,0,10" IsEditable="True" IsReadOnly="True" ItemsSource="{Binding LevelsToChoose}" Text="{Binding Texts.Dict[CbSelectWordsLevel]}" 
+                              SelectedItem="{Binding SelectedLevel}" Visibility="{Binding LessonStarted, Converter={StaticResource invBoolToVisibility}}"></ComboBox>
                     <Button Content="{Binding Texts.Dict[BtnStartLesson]}" Command="{Binding ChangeLearningStateCmd}" Visibility="{Binding LessonStarted, Converter={StaticResource invBoolToVisibility}}"></Button>
-                    <Button Content="{Binding Texts.Dict[BtnStopLesson]}" Command="{Binding ChangeLearningStateCmd}" Visibility="{Binding LessonStarted, Converter={StaticResource boolToVisibility}}"></Button>
+                    <Button Margin="0" Content="{Binding Texts.Dict[BtnStopLesson]}" Command="{Binding ChangeLearningStateCmd}" Visibility="{Binding LessonStarted, Converter={StaticResource boolToVisibility}}"></Button>
                 </StackPanel>
             </StackPanel>
         </Grid>

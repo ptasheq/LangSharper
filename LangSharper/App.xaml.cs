@@ -17,6 +17,7 @@ namespace LangSharper
             Application.Current.Properties["Database"] = new Database(Globals.AppName, Globals.Path + Globals.DatabaseFileName);
             Application.Current.Properties["DatabasePath"] = Globals.Path + Globals.DatabaseFileName;
             Application.Current.Properties["ViewModelStack"] = new Stack<BaseViewModel>();
+            Application.Current.Properties["WaitTime"] = 1500;
         }
     }
 }

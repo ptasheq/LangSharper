@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:langSharper="clr-namespace:LangSharper"
         xmlns:userControls="clr-namespace:LangSharper.UserControls"
-        Title="LangSharper" Height="350" Width="525"
+        Title="LangSharper" Height="430" Width="525"
         DataContext="{Binding CurrentModel, Source={x:Static langSharper:PropertyFinder.Instance}}">
     <Window.Resources>
         <Style TargetType="StackPanel">

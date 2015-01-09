@@ -28,7 +28,7 @@ namespace LangSharperTests
         [TestCleanup]
         public void TestClean()
         {
-            BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson = null;
+            BaseViewModel.GetViewModel<ManageLessonsViewModel>().Lesson = null;
             Globals.DeleteDirIfExists(Path.Combine(Globals.ResourcePath,
                                       (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name), true);
         }
@@ -39,7 +39,7 @@ namespace LangSharperTests
             // base class is abstract, to instantiate we us ManageLessonsViewModel
             BaseLessonListViewModel vm = new ManageLessonsViewModel();
             vm.OnViewActivate();
-            Assert.IsNull(vm.SelectedLesson);
+            Assert.IsNull(vm.Lesson);
             Assert.AreEqual(0, vm.Lessons.Count);
 
             int userId = (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Id;

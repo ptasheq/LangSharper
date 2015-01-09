@@ -118,8 +118,8 @@ namespace LangSharper
                     throw new NullReferenceException("ExWrongViewForAction");
                 }
                 
-                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), _appName,
-                                    user.Name, lesson.Name, _definitionLang1 + "_" + _definitionLang2 + ".png");
+                return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), _appName, user.Name,
+                    lesson.Name, _definitionLang1.Replace(" ", "_") + "_" + _definitionLang2.Replace(" ", "_") + ".png");
             }
             
             public short Level {

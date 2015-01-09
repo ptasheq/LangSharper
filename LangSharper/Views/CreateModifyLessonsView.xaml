@@ -39,8 +39,8 @@
         </Style>
 
         <BooleanToVisibilityConverter x:Key="boolToVisibility"/>
-        <langSharper:EmptyStringToVisibilityConverter x:Key="emptyStringToVisibility" />
-        <langSharper:InverseBooleanToVisibilityConverter x:Key="invBoolToVisibility"/>
+        <resources:EmptyStringToVisibilityConverter x:Key="emptyStringToVisibility" />
+        <resources:InverseBooleanToVisibilityConverter x:Key="invBoolToVisibility"/>
     </UserControl.Resources>
     <DockPanel DataContext="{Binding}">
         <Button Style="{StaticResource btnPrevious}" DockPanel.Dock="Left" 
@@ -78,7 +78,8 @@
             <Button Content="{Binding Texts.Dict[BtnShowChangeLessonSection]}" Command="{Binding ShowChangeLessonNameSectionCmd}"
                     Visibility="{Binding IsChangeNameVisible, Converter={StaticResource invBoolToVisibility}}"></Button>
 
-            <ListView ItemsSource="{Binding ExtendedWords}" Visibility="{Binding Lesson.Name, Converter={StaticResource emptyStringToVisibility}}" HorizontalContentAlignment="Stretch">
+            <ListView ItemsSource="{Binding ExtendedWords}" Visibility="{Binding Lesson.Name, Converter={StaticResource emptyStringToVisibility}}" 
+                      MaxHeight="150" HorizontalContentAlignment="Stretch">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid MaxWidth="380">

@@ -35,7 +35,7 @@ namespace LangSharperTests
         [TestCleanup]
         public void TestClean()
         {
-            BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson = null;
+            BaseViewModel.GetViewModel<ManageLessonsViewModel>().Lesson = null;
             Globals.DeleteDirIfExists(Path.Combine(Globals.ResourcePath,
                                       (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name), true);
         }
@@ -50,7 +50,7 @@ namespace LangSharperTests
             Assert.AreEqual(null, vm.Lesson.Name);
             Assert.AreEqual((PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Id, vm.Lesson.UserId);
 
-            BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson = new Database.Lesson()
+            BaseViewModel.GetViewModel<ManageLessonsViewModel>().Lesson = new Database.Lesson()
             {
                 Id = 1, 
                 Name = "testlesson",
@@ -59,7 +59,7 @@ namespace LangSharperTests
             vm.OnViewActivate();
 
             Assert.IsFalse(vm.IsChangeNameVisible);
-            StringAssert.Contains(BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson.Name, vm.Lesson.Name);
+            StringAssert.Contains(BaseViewModel.GetViewModel<ManageLessonsViewModel>().Lesson.Name, vm.Lesson.Name);
             Assert.AreEqual((PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Id, vm.Lesson.UserId);
         }
 
@@ -79,13 +79,13 @@ namespace LangSharperTests
             using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString()))
             {
                 db.Insert(newLesson);
-                db.Insert(new Database.Word { DefinitionLang1 = "a", DefinitionLang2 = "b", LessonId = newLesson.Id });
-                db.Insert(new Database.Word { DefinitionLang1 = "b", DefinitionLang2 = "c", LessonId = newLesson.Id });
-                db.Insert(new Database.Word { DefinitionLang1 = "c", DefinitionLang2 = "d", LessonId = newLesson.Id });
+                db.Insert(new Database.Word { DefinitionLang1 = "a b", DefinitionLang2 = "b", LessonId = newLesson.Id });
+                db.Insert(new Database.Word { DefinitionLang1 = "b", DefinitionLang2 = "c d", LessonId = newLesson.Id });
+                db.Insert(new Database.Word { DefinitionLang1 = "c d", DefinitionLang2 = "d f", LessonId = newLesson.Id });
                 db.Insert(new Database.Word { DefinitionLang1 = "c", DefinitionLang2 = "d", LessonId = newLesson.Id+1 });
             }
 
-            BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson = newLesson;
+            BaseViewModel.GetViewModel<ManageLessonsViewModel>().Lesson = newLesson;
             vm.OnViewActivate();
             Assert.AreEqual(3, vm.ExtendedWords.Count);
             foreach (var w in vm.ExtendedWords)
@@ -131,7 +131,7 @@ namespace LangSharperTests
             StringAssert.Contains(vm.Lesson.Name, vm.NewName);
             Assert.AreEqual(2, propertyChangedCount);
 
-            BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson = new Database.Lesson
+            BaseViewModel.GetViewModel<ManageLessonsViewModel>().Lesson = new Database.Lesson
             {
                 Id = 1, 
                 Name = "testlesson",
@@ -140,7 +140,7 @@ namespace LangSharperTests
             vm.OnViewActivate();
             Assert.IsFalse(vm.ChangeLessonNameCmd.CanExecute(0));
 
-            BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson.Name = "testname";
+            BaseViewModel.GetViewModel<ManageLessonsViewModel>().Lesson.Name = "testname";
             vm.OnViewActivate();
 
             var oldName = "testlesson";
@@ -195,7 +195,7 @@ namespace LangSharperTests
             Assert.IsFalse(vm.ShowChangeLessonNameSectionCmd.CanExecute(0));
             Assert.IsTrue(vm.IsChangeNameVisible);
 
-            BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson = new Database.Lesson()
+            BaseViewModel.GetViewModel<ManageLessonsViewModel>().Lesson = new Database.Lesson()
             {
                 Id = 1, 
                 Name = "testlesson",
@@ -222,7 +222,7 @@ namespace LangSharperTests
         public void DropImageTest()
         {
             var vm = PrepareVm();
-            var item = new ExtendedWord(new Database.Word{ DefinitionLang1 = "blabla", DefinitionLang2 = "awefw", HasImage = false });
+            var item = new ExtendedWord(new Database.Word{ DefinitionLang1 = "def 1", DefinitionLang2 = "def2", HasImage = false });
             vm.ExtendedWords.Add(item);
             Assert.IsTrue(vm.DropImageCmd.CanExecute(0));
 
@@ -288,7 +288,8 @@ namespace LangSharperTests
             Assert.AreEqual(item.DefinitionLang2, vm.ExtendedWords[1].DefinitionLang2);
             Assert.IsTrue(vm.ExtendedWords[1].HasImage);
             Assert.AreEqual(Path.Combine(Globals.ResourcePath, (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name,
-                                         vm.Lesson.Name, item.DefinitionLang1 + "_" + item.DefinitionLang2 + ".png"), item.ImagePath.OriginalString);
+                                         vm.Lesson.Name, item.DefinitionLang1.Replace(" ", "_") + "_" + item.DefinitionLang2.Replace(" ", "_")
+                                         + ".png"), item.ImagePath.OriginalString);
             Assert.IsTrue(File.Exists(vm.ExtendedWords[1].ImagePath.AbsolutePath));
             Assert.AreEqual(2, propChangedCount);
 
@@ -299,7 +300,8 @@ namespace LangSharperTests
             vm.DropImageCmd.Execute(new Tuple<string, string, IDataObject>(item.DefinitionLang1, item.DefinitionLang2, daOb));
             Assert.IsFalse(vm.IsErrorVisible);
             Assert.AreEqual(Path.Combine(Globals.ResourcePath, (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name,
-                                         vm.Lesson.Name, item.DefinitionLang1 + "_" + item.DefinitionLang2 + ".png"), item.ImagePath.OriginalString);
+                                         vm.Lesson.Name, item.DefinitionLang1.Replace(" ", "_") + "_" + item.DefinitionLang2.Replace(" ", "_")
+                                         + ".png"), item.ImagePath.OriginalString);
             Assert.AreEqual(new FileInfo(Globals.Path + "Nullimage.png").Length, new FileInfo(vm.ExtendedWords[1].ImagePath.AbsolutePath).Length);
 
             //
@@ -439,7 +441,7 @@ namespace LangSharperTests
             // view change
             //
             BaseViewModel.GetViewModel<ManageLessonsViewModel>().OnViewActivate();
-            BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson = vm.Lesson;
+            BaseViewModel.GetViewModel<ManageLessonsViewModel>().Lesson = vm.Lesson;
             PropertyFinder.Instance.CurrentModel = vm;
             Assert.AreEqual(6, vm.ExtendedWords.Count);
 

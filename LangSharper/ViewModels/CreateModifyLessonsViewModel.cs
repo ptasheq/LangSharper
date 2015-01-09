@@ -36,7 +36,7 @@ namespace LangSharper.ViewModels
         {
             NewName = null;
             IsErrorVisible = false;
-            if (GetViewModel<ManageLessonsViewModel>().SelectedLesson == null)
+            if (GetViewModel<ManageLessonsViewModel>().Lesson == null)
             {
                 Lesson = new Database.Lesson { Name = null, UserId = (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Id };
                 IsChangeNameVisible = true;
@@ -44,7 +44,7 @@ namespace LangSharper.ViewModels
             }
             else
             {
-                Lesson = GetViewModel<ManageLessonsViewModel>().SelectedLesson;
+                Lesson = GetViewModel<ManageLessonsViewModel>().Lesson;
                 IsChangeNameVisible = false;
                 using (var db = new SQLiteConnection(new SQLitePlatformWin32(), PropertyFinder.Instance.Resource["DatabasePath"].ToString()))
                 {

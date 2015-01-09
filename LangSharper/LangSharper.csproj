@@ -83,6 +83,7 @@
     <Compile Include="Resources\DragDropBehavior.cs" />
     <Compile Include="Resources\ExtendedWord.cs" />
     <Compile Include="Resources\Globals.cs" />
+    <Compile Include="Resources\IntToColorConverter.cs" />
     <Compile Include="Resources\InverseBoolConverter.cs" />
     <Compile Include="Resources\NullToVisibilityConverter.cs" />
     <Compile Include="UserControls\ErrorControl.xaml.cs">
@@ -186,7 +187,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

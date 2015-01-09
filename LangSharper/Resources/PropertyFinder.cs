@@ -46,7 +46,8 @@ namespace LangSharper
 
         public void ReturnToPreviousModel()
         {
-            (_dict["ViewModelStack"] as Stack<ViewModels.BaseViewModel>).Pop().OnViewActivate();
+            (_dict["ViewModelStack"] as Stack<ViewModels.BaseViewModel>).Pop();
+            CurrentModel.OnViewActivate();
             OnPropertyChanged("CurrentModel");
         }
 

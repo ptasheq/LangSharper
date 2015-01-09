@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using LangSharper.Annotations;
@@ -9,6 +10,8 @@ namespace LangSharper.Resources
     public class ExtendedWord : Database.Word, INotifyPropertyChanged
     {
         Uri _lastImagePath;
+        public enum AnswerType { NotYet, Incorrect, Correct, CorrectButWasIncorrect };
+        AnswerType _correctlyAnswered;
 
         public Uri ImagePath {
             get
@@ -18,7 +21,6 @@ namespace LangSharper.Resources
                 {
                     throw new Exception("ExWrongViewForAction");
                 }
-
                 var lesson = type.GetProperty("Lesson").GetValue(PropertyFinder.Instance.CurrentModel, null) as Database.Lesson;
                 if (lesson == null || lesson.Name == null || HasImage == false)
                 {
@@ -64,7 +66,12 @@ namespace LangSharper.Resources
         }
 
         public bool IsNew { get; set; }
-        public bool CorrectlyAnswered { get; set; }
+
+        public AnswerType CorrectlyAnswered
+        {
+            get { return _correctlyAnswered; } 
+            set { _correctlyAnswered = value; OnPropertyChanged(); }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -48,8 +48,7 @@ namespace LangSharperTests
                 {vm.ManageLessonsCmd, typeof (ManageLessonsViewModel)},
                 {vm.SimpleLearningCmd, typeof (SimpleLearningViewModel)},
                 {vm.WriteLearningCmd, typeof (WriteLearningViewModel)},
-                {vm.StatisticsCmd, typeof (StatisticsViewModel)},
-                {vm.PreviousCmd, typeof (StartViewModel)}
+                {vm.StatisticsCmd, typeof (StatisticsViewModel)}
             };
             foreach (var pair in dict)
             {
@@ -58,6 +57,8 @@ namespace LangSharperTests
                 Assert.IsInstanceOfType(PropertyFinder.Instance.CurrentModel, pair.Value);
                 PropertyFinder.Instance.ReturnToPreviousModel();
             }
+            PropertyFinder.Instance.ReturnToPreviousModel();
+            Assert.IsInstanceOfType(PropertyFinder.Instance.CurrentModel, typeof (StartViewModel));
         }
 
         [TestCleanup]

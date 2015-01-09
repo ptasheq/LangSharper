@@ -31,7 +31,7 @@ namespace LangSharperTests
         [TestCleanup]
         public void TestClean()
         {
-            BaseViewModel.GetViewModel<ManageLessonsViewModel>().SelectedLesson = null;
+            BaseViewModel.GetViewModel<ManageLessonsViewModel>().Lesson = null;
             Globals.DeleteDirIfExists(Path.Combine(Globals.ResourcePath,
                                       (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name), true);
         }
@@ -54,17 +54,17 @@ namespace LangSharperTests
             Database.Lesson lesson = PrepareModifyingTests();
 
             var vm = BaseViewModel.GetViewModel<ManageLessonsViewModel>();
-            vm.SelectedLesson = null;
+            vm.Lesson = null;
             Assert.IsTrue(vm.CreateNewLessonCmd.CanExecute(0));
             vm.CreateNewLessonCmd.Execute(0);
             Assert.IsInstanceOfType(PropertyFinder.Instance.CurrentModel, typeof(CreateModifyLessonsViewModel));
             Assert.IsFalse(vm.IsErrorVisible);
 
             PropertyFinder.Instance.CurrentModel = vm;
-            vm.SelectedLesson = lesson;
+            vm.Lesson = lesson;
             Assert.IsTrue(vm.CreateNewLessonCmd.CanExecute(0));
             vm.CreateNewLessonCmd.Execute(0);
-            Assert.IsNull(vm.SelectedLesson);
+            Assert.IsNull(vm.Lesson);
             Assert.IsFalse(vm.IsErrorVisible);
             Assert.IsNull(BaseViewModel.GetViewModel<CreateModifyLessonsViewModel>().Lesson.Name);
         }
@@ -75,14 +75,14 @@ namespace LangSharperTests
             Database.Lesson lesson = PrepareModifyingTests();
 
             var vm = BaseViewModel.GetViewModel<ManageLessonsViewModel>();
-            vm.SelectedLesson = null;
+            vm.Lesson = null;
             Assert.IsTrue(vm.DeleteChosenLessonCmd.CanExecute(0));
             vm.DeleteChosenLessonCmd.Execute(0);
             Assert.IsInstanceOfType(PropertyFinder.Instance.CurrentModel, typeof(ManageLessonsViewModel));
             Assert.IsTrue(vm.IsErrorVisible);
             Assert.AreEqual(vm.Texts.Dict["ExNoLessonChosen"], vm.ErrorMessage);
 
-            vm.SelectedLesson = lesson;
+            vm.Lesson = lesson;
             Assert.IsTrue(vm.DeleteChosenLessonCmd.CanExecute(0));
             vm.DeleteChosenLessonCmd.Execute(0);
             Assert.IsFalse(vm.Lessons.Contains(lesson));
@@ -98,17 +98,17 @@ namespace LangSharperTests
             Database.Lesson lesson = PrepareModifyingTests();
 
             var vm = BaseViewModel.GetViewModel<ManageLessonsViewModel>();
-            vm.SelectedLesson = null;
+            vm.Lesson = null;
             Assert.IsTrue(vm.EditChosenLessonCmd.CanExecute(0));
             vm.EditChosenLessonCmd.Execute(0);
             Assert.IsInstanceOfType(PropertyFinder.Instance.CurrentModel, typeof(ManageLessonsViewModel));
             Assert.IsTrue(vm.IsErrorVisible);
             Assert.AreEqual(vm.Texts.Dict["ExNoLessonChosen"], vm.ErrorMessage);
 
-            vm.SelectedLesson = lesson;
+            vm.Lesson = lesson;
             Assert.IsTrue(vm.EditChosenLessonCmd.CanExecute(0));
             vm.EditChosenLessonCmd.Execute(0);
-            Assert.AreSame(vm.SelectedLesson, BaseViewModel.GetViewModel<CreateModifyLessonsViewModel>().Lesson);
+            Assert.AreSame(vm.Lesson, BaseViewModel.GetViewModel<CreateModifyLessonsViewModel>().Lesson);
         }
     }
 }

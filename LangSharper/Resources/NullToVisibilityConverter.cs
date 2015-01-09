@@ -2,8 +2,8 @@
 using System.Windows;
 using System.Windows.Data;
 
-namespace LangSharper {
-
+namespace LangSharper.Resources 
+{
     public class EmptyStringToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
