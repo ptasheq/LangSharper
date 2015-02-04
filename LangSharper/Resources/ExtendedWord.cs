@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using LangSharper.Annotations;
@@ -24,7 +23,7 @@ namespace LangSharper.Resources
                 var lesson = type.GetProperty("Lesson").GetValue(PropertyFinder.Instance.CurrentModel, null) as Database.Lesson;
                 if (lesson == null || lesson.Name == null || HasImage == false)
                 {
-                    return new Uri(Path.GetFullPath(Globals.Path + "NullImage.png"));
+                    return new Uri(Path.GetFullPath(PropertyFinder.Instance.Resource["Path"] + "NullImage.png"));
                 }
                 if (_lastImagePath != null && _lastImagePath.OriginalString !=
                     GetImagePath(PropertyFinder.Instance.Resource["CurrentUser"] as Database.User, lesson))

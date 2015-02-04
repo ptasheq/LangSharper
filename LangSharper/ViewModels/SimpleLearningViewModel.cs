@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using LangSharper.Resources;
@@ -58,19 +57,6 @@ namespace LangSharper.ViewModels
                 LessonStarted = true;
                 Globals.Shuffle(_allWords);
 
-                Debug.WriteLine("Kolejnosc wszystkich: ");
-                foreach (var word in _allWords)
-                {
-                    Debug.WriteLine(word.DefinitionLang1 + " " + word.DefinitionLang2);
-                }
-                Debug.WriteLine("Koniec");
-
-                Debug.WriteLine("Kolejnosc: ");
-                foreach (var word in _allWords.Where(w => w.Level == SelectedLevel))
-                {
-                    Debug.WriteLine(word.DefinitionLang1 + " " + word.DefinitionLang2); 
-                }
-                Debug.WriteLine("Koniec");
                 _currentWordIndex = _allWords.FindIndex(w => w.Level == SelectedLevel);
                 SetRandomSubCollection(Globals.WordsToChooseCount);
             }
@@ -87,7 +73,6 @@ namespace LangSharper.ViewModels
         async void ChooseAnswer(object inWord)
         {
             var word = inWord as ExtendedWord;
-            Debug.WriteLine("1 " + word.DefinitionLang1 + " " + word.CorrectlyAnswered + " " + WordsRemaining);
             if (word.Id == WordToTranslate.Id)
             {
                 if (_allWords[_currentWordIndex].CorrectlyAnswered == ExtendedWord.AnswerType.NotYet)
@@ -110,11 +95,9 @@ namespace LangSharper.ViewModels
 
             await Task.Delay((int) PropertyFinder.Instance.Resource["WaitTime"]);
             
-            Debug.WriteLine("2 " + word.DefinitionLang1 + " " + word.CorrectlyAnswered + " " + WordsRemaining);
 
             if (WordsRemaining > 0)
             {
-                Debug.WriteLine("Indeksy: " + _currentWordIndex);
                 _currentWordIndex = _allWords.FindIndex((_currentWordIndex + 1) % _allWords.Count, 
                                                         w => w.CorrectlyAnswered < ExtendedWord.AnswerType.Correct && w.Level == SelectedLevel);
                 if (_currentWordIndex == -1)
@@ -122,13 +105,6 @@ namespace LangSharper.ViewModels
                     _currentWordIndex = _allWords.FindIndex(0, w => w.CorrectlyAnswered < ExtendedWord.AnswerType.Correct 
                                                             && w.Level == SelectedLevel);
                 }
-                Debug.WriteLine(_currentWordIndex);
-                Debug.WriteLine("Aktualny stan: ");
-                foreach (var wrd in _allWords.Where(w => w.Level == SelectedLevel))
-                {
-                    Debug.WriteLine(wrd.DefinitionLang1 + " " + wrd.DefinitionLang2 + " " + wrd.CorrectlyAnswered + " " + wrd.Level);
-                }
-                Debug.WriteLine("Koniec");
                 SetRandomSubCollection(Globals.WordsToChooseCount);
                 OnPropertyChanged("WordsRemaining");
                 OnPropertyChanged("WordToTranslate");
@@ -152,10 +128,7 @@ namespace LangSharper.ViewModels
             Globals.Shuffle(allWordsCopy);
             int shuffledWordIndex = allWordsCopy.IndexOf(_allWords[_currentWordIndex]);
             // We want current word after n first places in array
-            Debug.WriteLine("SRSC");
-            Debug.WriteLine(allWordsCopy[n].DefinitionLang1);
             Globals.Swap(allWordsCopy, shuffledWordIndex, n);
-            Debug.WriteLine(allWordsCopy[n].DefinitionLang1);
 
             for (int i = 0; i < n; ++i)
             {

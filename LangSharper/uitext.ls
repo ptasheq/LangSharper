@@ -43,6 +43,8 @@ TbMainWriteLearning:Tryb wpisywania
 TbNotAvailable:Tryb niedostępny w danej wersji aplikacji
 
 TbMainStatistics:Przegląd statystyk
+BtnShowStatistics:Zobacz dane lekcji
+BtnHideStatistics:Zamknij dane lekcji
 
 BtnPrevious:Wstecz
 

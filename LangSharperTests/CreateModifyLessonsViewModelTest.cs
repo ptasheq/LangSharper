@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Windows;
 using LangSharper;
@@ -20,14 +21,16 @@ namespace LangSharperTests
         [TestInitialize]
         public void TestInit()
         {
-            File.Delete(Globals.Path + "testdatabase.sqlite");
+            var settings = ConfigurationManager.AppSettings;
+            File.Delete(TestGlobals.Path + "testdatabase.sqlite");
             var uiTexts = new UiTexts("../../../LangSharper/" + Globals.UiTextFileName);
             PropertyFinder.CreateInstance(new Dictionary<string, object>
             {
                 { "UiTexts", uiTexts }, 
-                { "DatabasePath", Globals.Path + "testdatabase.sqlite" },
+                { "DatabasePath", TestGlobals.Path + "testdatabase.sqlite" },
                 { "CurrentUser", new Database.User { Id = 0, Name = "testuser"}},
-                { "ViewModelStack", new Stack<BaseViewModel>() }
+                { "ViewModelStack", new Stack<BaseViewModel>() },
+                { "Path", "../../"}
             });
             var d = new Database(Globals.AppName, PropertyFinder.Instance.Resource["DatabasePath"].ToString());
         }
@@ -244,7 +247,7 @@ namespace LangSharperTests
             vm.HideError.Execute(0);
 
             var daOb = new DataObject();
-            daOb.SetFileDropList(new StringCollection { Globals.Path + "test_image.png" });
+            daOb.SetFileDropList(new StringCollection { TestGlobals.Path + "test_image.png" });
 
             vm.DropImageCmd.Execute(new Tuple<string, string, IDataObject>(item.DefinitionLang1, null, daOb));
             Assert.IsTrue(vm.IsErrorVisible);
@@ -264,7 +267,7 @@ namespace LangSharperTests
             //
             // Wrong file type
             //
-            daOb.SetFileDropList(new StringCollection { Globals.Path + "uitexttest.ls" });
+            daOb.SetFileDropList(new StringCollection { TestGlobals.Path + "uitexttest.ls" });
             vm.DropImageCmd.Execute(new Tuple<string, string, IDataObject>(item.DefinitionLang1, item.DefinitionLang2, daOb));
             Assert.IsTrue(vm.IsErrorVisible);
             Assert.AreEqual(vm.Texts.Dict["ExWrongItemDropped"], vm.ErrorMessage);
@@ -281,7 +284,7 @@ namespace LangSharperTests
                     ++propChangedCount;
                 }
             };
-            daOb.SetFileDropList(new StringCollection { Globals.Path + "test_image.png" });
+            daOb.SetFileDropList(new StringCollection { TestGlobals.Path + "test_image.png" });
             vm.DropImageCmd.Execute(new Tuple<string, string, IDataObject>(item.DefinitionLang1, item.DefinitionLang2, daOb));
             Assert.IsFalse(vm.IsErrorVisible);
             Assert.AreEqual(item.DefinitionLang1, vm.ExtendedWords[1].DefinitionLang1);
@@ -296,13 +299,13 @@ namespace LangSharperTests
             //
             // Correct data - add second time
             //
-            daOb.SetFileDropList(new StringCollection { Globals.Path + "Nullimage.png" });
+            daOb.SetFileDropList(new StringCollection { TestGlobals.Path + "Nullimage.png" });
             vm.DropImageCmd.Execute(new Tuple<string, string, IDataObject>(item.DefinitionLang1, item.DefinitionLang2, daOb));
             Assert.IsFalse(vm.IsErrorVisible);
             Assert.AreEqual(Path.Combine(Globals.ResourcePath, (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name,
                                          vm.Lesson.Name, item.DefinitionLang1.Replace(" ", "_") + "_" + item.DefinitionLang2.Replace(" ", "_")
                                          + ".png"), item.ImagePath.OriginalString);
-            Assert.AreEqual(new FileInfo(Globals.Path + "Nullimage.png").Length, new FileInfo(vm.ExtendedWords[1].ImagePath.AbsolutePath).Length);
+            Assert.AreEqual(new FileInfo(TestGlobals.Path + "Nullimage.png").Length, new FileInfo(vm.ExtendedWords[1].ImagePath.AbsolutePath).Length);
 
             //
             // Wrong view
@@ -323,7 +326,7 @@ namespace LangSharperTests
             vm.ExtendedWords.Add(item);
 
             var daOb = new DataObject();
-            daOb.SetFileDropList(new StringCollection { Globals.Path + "test_image.png" });
+            daOb.SetFileDropList(new StringCollection { TestGlobals.Path + "test_image.png" });
             vm.DropImageCmd.Execute(new Tuple<string, string, IDataObject>(item.DefinitionLang1, item.DefinitionLang2, daOb));
             var tmpPath = item.ImagePath.AbsolutePath; 
 
@@ -342,7 +345,7 @@ namespace LangSharperTests
             vm.ExtendedWords.Add(item);
 
             var daOb = new DataObject();
-            daOb.SetFileDropList(new StringCollection { Globals.Path + "test_image.png" });
+            daOb.SetFileDropList(new StringCollection { TestGlobals.Path + "test_image.png" });
             vm.DropImageCmd.Execute(new Tuple<string, string, IDataObject>(item.DefinitionLang1, item.DefinitionLang2, daOb));
             Assert.IsTrue(vm.IsErrorVisible);
             Assert.AreEqual(vm.Texts.Dict["ExDropImageDefinitions"], vm.ErrorMessage);
@@ -373,7 +376,7 @@ namespace LangSharperTests
             Assert.IsNull(vm.ExtendedWords[1].DefinitionLang1);
             Assert.IsNull(vm.ExtendedWords[1].DefinitionLang2);
             Assert.IsFalse(vm.ExtendedWords[1].HasImage);
-            Assert.AreEqual(Path.GetFullPath(Globals.Path + "NullImage.png"), vm.ExtendedWords[1].ImagePath.OriginalString);
+            Assert.AreEqual(Path.GetFullPath(TestGlobals.Path + "NullImage.png"), vm.ExtendedWords[1].ImagePath.OriginalString);
 
             //
             // max word number
@@ -449,7 +452,7 @@ namespace LangSharperTests
             // drop image
             //
             var daOb = new DataObject();
-            daOb.SetFileDropList(new StringCollection { Globals.Path + "test_image.png" });
+            daOb.SetFileDropList(new StringCollection { TestGlobals.Path + "test_image.png" });
             vm.DropImageCmd.Execute(new Tuple<string, string, IDataObject>(vm.ExtendedWords[0].DefinitionLang1, 
                                                                            vm.ExtendedWords[0].DefinitionLang2, daOb));
             vm.ConfirmChangesCmd.Execute(0);

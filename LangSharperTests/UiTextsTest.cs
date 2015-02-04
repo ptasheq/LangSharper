@@ -10,7 +10,7 @@ namespace LangSharperTests
         [TestMethod]
         public void ConstructorTest()
         {
-            UiTexts ut = new UiTexts(Globals.Path + "uitexttest.ls");
+            UiTexts ut = new UiTexts(TestGlobals.Path + "uitexttest.ls");
             Assert.AreEqual(5, ut.GetLength());
 
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using SQLite.Net;
 using SQLite.Net.Platform.Win32;
 
@@ -15,6 +14,7 @@ namespace LangSharper.ViewModels
             {
                 Lessons = new ObservableCollection<Database.Lesson>(db.Table<Database.Lesson>().Where(l => l.UserId == userId));
             }
+            OnPropertyChanged("Lesson");
         }
 
         public Database.Lesson Lesson { get; set; }

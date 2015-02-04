@@ -7,9 +7,9 @@ namespace LangSharper
 {
     public static class Globals
     {
-        public const string Path = "../../";
+        //public const string Path = "../../";
+        public const int ErrorCode = -1;
         public const string UiTextFileName = "uitext.ls";
-        public const string DatabaseFileName = "database.sqlite";
         public const string AppName = "langsharper";
         public static readonly string ResourcePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), AppName);
         public const int MinWordsForLesson = 5;
@@ -35,6 +35,12 @@ namespace LangSharper
                 array[i] = array[randomIndex];
                 array[randomIndex] = tmp;
             }
+        }
+
+        public static string RemoveAccent(this String str)
+        {
+            byte[] bytes = System.Text.Encoding.GetEncoding("Cyrillic").GetBytes(str);
+            return System.Text.Encoding.ASCII.GetString(bytes);
         }
 
         public static void Swap<T>(IList<T> list, int a, int b)

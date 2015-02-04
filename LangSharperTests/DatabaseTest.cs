@@ -17,9 +17,9 @@ namespace LangSharperTests
         [TestMethod]
         public void ConstructorTest()
         {
-            File.Delete(Globals.Path + "testdatabase.sqlite");
-            Database d = new Database(Globals.AppName, Globals.Path + "testdatabase.sqlite");
-            Assert.IsTrue(File.Exists(Globals.Path + "testdatabase.sqlite"));
+            File.Delete(TestGlobals.Path + "testdatabase.sqlite");
+            Database d = new Database(Globals.AppName, TestGlobals.Path + "testdatabase.sqlite");
+            Assert.IsTrue(File.Exists(TestGlobals.Path + "testdatabase.sqlite"));
 
             using (var db = new SQLiteConnection(new SQLitePlatformWin32(), Database.FileName))
             {
@@ -34,8 +34,8 @@ namespace LangSharperTests
         {
             var uiTexts = new UiTexts("../../../LangSharper/" + Globals.UiTextFileName);
             PropertyFinder.CreateInstance(new Dictionary<string, object> {{"UiTexts", uiTexts}});
-            File.Delete(Globals.Path + "testdatabase.sqlite");
-            Database d = new Database(Globals.AppName, Globals.Path + "testdatabase.sqlite");
+            File.Delete(TestGlobals.Path + "testdatabase.sqlite");
+            Database d = new Database(Globals.AppName, TestGlobals.Path + "testdatabase.sqlite");
 
             using (var db = new SQLiteConnection(new SQLitePlatformWin32(), Database.FileName))
             {
@@ -81,8 +81,8 @@ namespace LangSharperTests
             {
                 {"UiTexts", new UiTexts("../../../LangSharper/" + Globals.UiTextFileName)}
             });
-            File.Delete(Globals.Path + "testdatabase.sqlite");
-            Database d = new Database(Globals.AppName, Globals.Path + "testdatabase.sqlite");
+            File.Delete(TestGlobals.Path + "testdatabase.sqlite");
+            Database d = new Database(Globals.AppName, TestGlobals.Path + "testdatabase.sqlite");
 
             using (var db = new SQLiteConnection(new SQLitePlatformWin32(), Database.FileName))
             {
@@ -122,8 +122,8 @@ namespace LangSharperTests
             {
                 { "UiTexts", new UiTexts("../../../LangSharper/" + Globals.UiTextFileName) }
             });
-            File.Delete(Globals.Path + "testdatabase.sqlite");
-            Database d = new Database(Globals.AppName, Globals.Path + "testdatabase.sqlite");
+            File.Delete(TestGlobals.Path + "testdatabase.sqlite");
+            Database d = new Database(Globals.AppName, TestGlobals.Path + "testdatabase.sqlite");
 
             Database.Lesson correctLesson;
             using (var db = new SQLiteConnection(new SQLitePlatformWin32(), Database.FileName))
@@ -177,8 +177,8 @@ namespace LangSharperTests
         {
             var uiTexts = new UiTexts("../../../LangSharper/" + Globals.UiTextFileName);
             PropertyFinder.CreateInstance(new Dictionary<string, object> {{"UiTexts", uiTexts}});
-            File.Delete(Globals.Path + "testdatabase.sqlite");
-            Database d = new Database(Globals.AppName, Globals.Path + "testdatabase.sqlite");
+            File.Delete(TestGlobals.Path + "testdatabase.sqlite");
+            Database d = new Database(Globals.AppName, TestGlobals.Path + "testdatabase.sqlite");
 
             using (var db = new SQLiteConnection(new SQLitePlatformWin32(), Database.FileName))
             {
@@ -236,10 +236,10 @@ namespace LangSharperTests
         {
             PropertyFinder.CreateInstance(new Dictionary<string, object>
             {
-                { "DatabasePath", Globals.Path + "testdatabase.sqlite" },
+                { "DatabasePath", TestGlobals.Path + "testdatabase.sqlite" },
                 { "CurrentUser", new Database.User { Name = "testuser"} }
             });
-            Database d = new Database(Globals.AppName, Globals.Path + "testdatabase.sqlite");
+            Database d = new Database(Globals.AppName, TestGlobals.Path + "testdatabase.sqlite");
             var word = new Database.Word { DefinitionLang1 = "kot", DefinitionLang2 = "a cat", LessonId = 1, HasImage = true };
             string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                                        Globals.AppName, (PropertyFinder.Instance.Resource["CurrentUser"] as Database.User).Name,

@@ -119,7 +119,7 @@ namespace LangSharper
                 }
                 
                 return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), _appName, user.Name,
-                    lesson.Name, _definitionLang1.Replace(" ", "_") + "_" + _definitionLang2.Replace(" ", "_") + ".png");
+                    lesson.Name, _definitionLang1.Replace(" ", "_").RemoveAccent() + "_" + _definitionLang2.Replace(" ", "_").RemoveAccent() + ".png");
             }
             
             public short Level {
